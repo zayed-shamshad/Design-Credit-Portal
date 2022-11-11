@@ -1,16 +1,19 @@
 <template>
     <h3>{{error}}</h3>
+    <div class="homepage-navbar">
+        Design credit portal
+    </div>
     <div class="signup-page-outside-form" >
         <form v-on:submit="login">
             <div class="signup-page">
                 <label>
                     email:
                 </label>
-    <input type="text" v-model="email">
+    <input type="email" v-model="email" required>
     <label>
         password:
     </label>
-    <input type="text" v-model="password">
+    <input type="password" v-model="password" required>
     <button type="submit">Login</button>
     </div>
     </form>

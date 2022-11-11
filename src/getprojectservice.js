@@ -45,6 +45,7 @@ class projectservice {
         return axios.delete(`${url}/${id}`);
     }
     static updateproject(id, title, description, number, department, status, professor, students, skills, evaluationstatus, deliverables) {
+        console.log(id, title, description, number, department, status, professor, students, skills, evaluationstatus, deliverables);
         return axios.patch(`${url}/${id}`, { title, description, number, department, professor, students, status, skills, evaluationstatus, deliverables });
     }
 

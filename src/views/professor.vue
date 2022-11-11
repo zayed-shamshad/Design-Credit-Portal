@@ -1,16 +1,22 @@
 <template>
-   
-    <button @click="logout">
-        logout
-    </button>
-    <button @click="showcreateprojectbox">
-        +++++
-    </button>
-    <div class="container">
-        <h1>edit</h1>
-        <div class="edit-project" v-if="showedit" :v-bind="showedit">
+    <div class="profnavbar">
+        <button @click="logout">
+            logout
+        </button>
+        <button @click="showcreateprojectbox">
+           Add a project
+        </button>
+        <button @click="shownotifs">
+            show notifications
+        </button>
+    </div>
+
+    <div class="edit-project-container" v-if="showedit">
+            <form v-on:submit="updateproject">
+        <div class="edit-project" v-bind="editindex">
         <input type="text" id="create-post" v-model="edittitle" :placeholder=projects[editindex].title>
         <input type="text" id="create-post" v-model="editdescription" :placeholder=projects[editindex].description>
+        <label>change status of project </label>
         <input type="checkbox" id="create-post" v-model="editstatus" :placeholder=projects[editindex].status>
         <input type="number" id="create-post" v-model="editnumber" :placeholder=projects[editindex].number>
         <input type="text" id="create-post" v-model="editdeliverables[0]" :placeholder=projects[editindex].deliverables[0]>
@@ -21,42 +27,47 @@
         <input type="text" id="create-post" v-model="editskills[0]" :placeholder=projects[editindex].skills[0]>
         <input type="text" id="create-post" v-model="editskills[1]" :placeholder=projects[editindex].skills[1]>
         <input type="text" id="create-post" v-model="editskills[2]" :placeholder=projects[editindex].skills[2]>
-        <button @click="updateproject(editindex)">
+        <button type="submit">
             Save
         </button>
+        </div>
+    </form>
         <button @click="showeditform(editindex)">
             cancel
         </button>
     </div>
-    </div>
-    <button  @click="shownotifs">
-        show notifications
-    </button>
+
+  
+
     <div class="sidepanel" v-if="showNotifs"> 
         <ul>
         <li v-for="(notification,ind) in notifs" :key="ind" :value="notification" class="notif">
-            <h3>
+            <div>
+                Student Name:
                 {{notifstudent[ind].name}}
+                Department:
                 {{notifstudent[ind].department}}
-            </h3>
-            <h3>
+            </div>
+            <div>
+                Project Title:
                 {{notifproject[ind].title}}
+                Project Description:
                 {{notifproject[ind].description}}
-            </h3>
-            <h3>
+        </div>
+            <div>
                 <button @click="viewStudent(ind)">
                     view
                 </button>
-            </h3>
-            <h3>
+            </div>
+            <div>
                <button @click="acceptstudent(ind)">Accept</button>
                 <button @click="rejectstudent(ind)">Reject</button>
-            </h3>
+            </div>
         </li>
         </ul>
     </div>
-    <div class="container">
-        <h1>Projects</h1>
+   
+        
         <div class="create-project">
             <form v-on:submit="addproject">
                 <div class="creat-project-inside-form">
@@ -74,10 +85,20 @@
                 </div>
             </form>
         </div>
-        <hr>
+        <div class="container">
+        <h1>Projects</h1>
         <div class="allprojects">
-        <div class="project-container">
-            open projects
+           
+            <div class="openclosebuttons">
+                <button @click="showopenp">
+                    open projects
+                </button>
+                <button @click="showclosedp">
+                    closed projects
+                </button>
+            </div>
+            <div class="projectsOC">
+        <div class="project-container-open" v-if="showopen">
             <div class="project-card" v-for="(project, index) in  getopenprojects" :item="project" :index="index" :key="project._id">
                 <h3>{{ project.title }}</h3>
                 <p class="text">{{ project.description }}</p>
@@ -88,8 +109,8 @@
             
             </div>
         </div>
-        <div class="project-container">
-            closed projects
+        <div class="project-container-closed" v-if="showclosed">
+
             <div class="project-card" v-for="(project, index) in  getclosedprojects" :item="project" :index="index"
                 :key="project._id">
                 <h3>{{ project.title }}</h3>
@@ -99,9 +120,9 @@
                 <!-- <p class="text" v-for="(skill, ind) in project.skills" :item="project" :index="ind" :key="ind">{{ skill }}</p> -->
                 <!-- <button v-on:click="deleteproject(index)">Delete</button>-->
                 <button v-on:click="showeditform(index)">Edit</button>
-                <button>checkout </button>
-        
+                <button @click="checkoutproject(index)">checkout </button>
             </div>
+        </div>
         </div>
         </div>
 
@@ -120,6 +141,9 @@ export default {
     name: 'professor',
     data() {
         return {
+            showopen:false,
+            showclosed:false,
+
             showcreateproject: false,
             
 
@@ -145,7 +169,7 @@ export default {
             prof: null,
 
             showedit: false,
-            editindex: null,
+            editindex: 0,
 
             edittitle: '',
             editdescription: '',
@@ -224,6 +248,16 @@ export default {
         });
     },
     methods: {
+        checkoutproject(index){
+            this.$router.push('/project/'+this.getclosedprojects[index]._id);
+        },
+        showopenp(){
+            this.showopen=!this.showopen;
+           
+        },
+        showclosedp(){
+            this.showclosed=!this.showclosed;
+        },
         // async updateNotifs(notifs){
         //     for (let i = 0; i < notifs.length; i++) {
         //         this.notifstudent[i] =await studentservice.getstudentbyid(notifs[i].studentid);
@@ -243,9 +277,10 @@ export default {
         },
         showeditform(ind){
             this.showedit=!this.showedit;
-           this.editindex=ind;
+            this.editindex = ind;
+            // document.getElementsByClassName("edit-project-container")[0].classList.toggle("show");
+          
         },
-        
         async deleteproject(index) {
             try {
                 await projectservice.deleteproject(this.projects[index]._id);
@@ -255,8 +290,11 @@ export default {
             }
             await profservice.updateprof(this.prof._id, this.prof.name, this.prof.email, this.prof.department, this.projects, this.prof.notifs);
         },
-        async updateproject(index) {
+        async updateproject(e)
+         {
+            e.preventDefault()
             try {
+                const index=this.editindex;
                 this.projects[index].title = this.edittitle;
                 this.projects[index].description = this.editdescription;
                 this.projects[index].number = this.editnumber;
@@ -267,13 +305,16 @@ export default {
                 this.projects[index].evaluationstatus = this.editevaluationstatus;
 
                 console.log(this.projects[index]);
+                console.log(this.edittitle);
              
                 // id, title, description, number, department, status, professor, students, skills, evaluationstatus, duration
                 await projectservice.updateproject(this.projects[index]._id, this.projects[index].title, this.projects[index].description, this.projects[index].number, this.projects[index].department, this.projects[index].status, this.projects[index].professor, this.projects[index].students, this.projects[index].skills, this.projects[index].evaluationstatus, this.projects[index].deliverables);
                 this.projects = await allprojectservice.getprojectsbyprof(this.profid);
+                this.showedit = false;
             } catch (err) {
                 this.error = err;
             }
+
         },
         viewStudent(ind){
             this.$router.push('/student/'+this.notifstudent[ind]._id);
@@ -341,24 +382,18 @@ export default {
 }
 </script>
 <style>
-.root {
+@import "../assets/professorpage.css";
+:root {
     --blue: #00ADB5;
     --white: #EEEEEE;
 }
-@import "../assets/professorpage.css";
-.edit-project{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    position: absolute;
-    top: 50vh;
-    left: 50vw;
-}
+
 div.container {
     max-width: 800px;
     margin: 0 auto;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 .project-container {
     display: flex;
@@ -380,6 +415,15 @@ div.container {
     font-size: 20px;
     font-weight: bold;
 }
+.project-card button{
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: var(--blue);
+    color: var(--white);
+    font-size: 20px;
+    margin: 10px;
+}
 
 
 p.text {
@@ -390,7 +434,7 @@ p.text {
 .sidepanel{
     width: 20vw;
     height: 100vh;
-    position:fixed;
+    position:absolute;
     background-color: #f1f1f1;
     display:flex;
     flex-direction: column;
@@ -400,14 +444,69 @@ p.text {
     overflow-y:scroll ;
 }
 .notif{
-   color:red;
+   color:var(--white);
+    background-color: #bababa;
+    border-radius: 10px;
+    padding: 10px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.notif button{
+    background-color: var(--blue);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+  
 }
 .allprojects{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height:400vh;
+    align-items: center;
+    background-color:var(--blue);
+    width:60vw;
+}
+.projectsOC{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     max-height:400vh;
     align-items:flex-start;
-    background-color:var(--blue)
+    background-color:var(--blue);
+    padding:20px;
 }
+.openclosebuttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+    background-color:var(--blue);
+    width:100%;
+    padding:20px;
+    color:#00ADB5;
+
+}
+.openclosebuttons button{
+    background-color: #EEEEEE;
+    border: none;
+    color: #00ADB5;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius:10px ;
+    transition: all 0.3s ease 0s;
+}
+.openclosebuttons button:hover{
+    background-color: #066d72;
+    color:#EEEEEE;
+}
+
 </style>

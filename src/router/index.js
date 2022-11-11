@@ -28,6 +28,12 @@ const router = createRouter({
     }
     ,
     {
+      path: '/project/:id',
+      name: 'project',
+      component: () => import('../views/projectdetails.vue'),
+      props: true
+    },
+    {
       path: '/student/:student',
       name: 'studentprofile',
       component: () => import('../views/studentprofile.vue'),

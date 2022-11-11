@@ -2,12 +2,13 @@ import axios from 'axios';
 const urlall = 'http://localhost:5000/student';
 const url = 'http://localhost:5000/studentregister';
 class studentservice {
-    static registerstudent(name, email, password, department) {
+    static registerstudent(name, email, password, department,skills) {
         return axios.post(url + "/signup", {
             name,
             email,
             password,
             department,
+            skills
         });
     }
     static loginstudent(email, password) {

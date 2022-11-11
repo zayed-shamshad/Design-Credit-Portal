@@ -1,5 +1,5 @@
 :root {
-    --blue: navy;
+    --blue: #00ADB5;
     --white: #ffffff;
 }
 .signup-page {
@@ -11,8 +11,8 @@
 }
 
 .signup-page-outside-form {
-    width: 400px;
-    height: 80vh;
+    width: 60vw;
+    height: 90vh;
     background-color:var(--blue);
     display: flex;
     flex-direction: column;
@@ -26,10 +26,10 @@
 .signup-page input{
     width: 80%;
     height: 40px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 5px;
     border: none;
-    padding: 10px;
+    padding: 5px;
     font-size: 20px;
     font-family: 'Roboto', sans-serif;
     

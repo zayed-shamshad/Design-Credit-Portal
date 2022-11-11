@@ -9,6 +9,11 @@
             </button>
         </div>
     </div>
+    <!-- <div v-else>
+        <h3 class="noproject">
+            no projects available
+        </h3>
+    </div> -->
 </template>
 
 <script>
@@ -103,6 +108,9 @@ export default {
 }
 </script>
 <style>
+.noproject{
+    color:red;
+}
 
 .project-container {
     display: flex;

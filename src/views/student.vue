@@ -17,7 +17,7 @@
     {{notifs.message}}
 </h3>
 <h3>
-    <button @click="remove()">X</button>
+    <button @click="remove()">clear notifs</button>
 </h3>
         </div>
         <div v-else>
@@ -215,7 +215,7 @@ export default {
     font-weight:bold;
 }
 :root {
-    --blue: navy;
+    --blue: var(--blue);
     --white: #ffffff;
 }
 .myproject-outside{
@@ -230,7 +230,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     flex-direction: row;
-    background-color:navy;
+    background-color:var(--blue);
     width:100vw;
 }
 .department-container button{

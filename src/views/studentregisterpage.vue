@@ -24,6 +24,18 @@
     </select>
 
     <label>
+        skill-1:
+        <input type="text" v-model="skillsstudent[0]" required>
+    </label>
+    <label>
+        skill-2:
+        <input type="text" v-model="skillsstudent[1]" required>
+    </label>
+    <label>
+        skill-3:
+        <input type="text" v-model="skillsstudent[2]" required>
+    </label>
+    <label>
         name:
         <input type="text" v-model="name" required>
     </label>
@@ -45,6 +57,7 @@ export default {
             email: '',
             password: '',
             department:"",
+            skillsstudent:[],
             error: null,
         }
     },
@@ -54,7 +67,7 @@ export default {
         },
         async signup(e) {
             e.preventDefault() // prevent page reload
-            const student = await studentservice.registerstudent(this.name, this.email, this.password,  this.department);
+            const student = await studentservice.registerstudent(this.name, this.email, this.password,  this.department,this.skillsstudent);
             if(student.status==200){
                 this.$router.push('/studentloginpage');
             }
