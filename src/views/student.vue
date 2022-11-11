@@ -9,16 +9,18 @@
     </div>
 
     <div class="sidepanel" v-if="showNotifs">
-        <div v-if="notifs">
-<h3>
-    {{notifs.projectid}}
-</h3>
-<h3>
+        <div v-if="notifproj">
+<div>
+    project title:
+    {{ notifproj }}
+</div>
+<div>
+    response:
     {{notifs.message}}
-</h3>
-<h3>
+</div>
+<div>
     <button @click="remove()">clear notifs</button>
-</h3>
+</div>
         </div>
         <div v-else>
             <h3>
@@ -31,12 +33,19 @@
 
     <div class="myproject-outside" v-if="requestsstatus=='accepted'">
     <div v-if="requestsstatus=='accepted'" class="project-card">
+        Title:
         <h2>{{myproject.title }}</h2>
+        Description:
         <p>{{ myproject.description }}</p>
+        Department:
         <p>{{ myproject.department }}</p>
+        Deliverable 1:
         <p>{{myproject.deliverables[0]}}</p>
+        Deliverable 2:
         <p>{{myproject.deliverables[1]}}</p>
+        Deliverable 3:
         <p>{{myproject.deliverables[2]}}</p>
+        Professor:
         <p>{{myproject.professor}}</p>
 
     </div>
@@ -82,7 +91,8 @@ export default {
             },
             skills:[],
             rejected:[],
-            student: null
+            student: null,
+            notifproj: "",
 
         }
     },
@@ -141,6 +151,11 @@ export default {
                         this.myproject.description=res.description;
                         this.myproject.department=res.department;
                         this.myproject.deliverables=res.deliverables;
+                        await projectservice.getaproject(this.notifs.projectid).then(
+                            ressss => {
+                                this.notifproj = ressss.title;
+                            }
+                        )
                         await profservice.getprofbyid(res.professor).then(res => {
                             this.myproject.professor=res.name;
                         })
@@ -259,7 +274,7 @@ export default {
 }
 .project-card {
     width: 350px;
-    height: 350px;
+   
     background-color: #f1f1f1;
     margin: 10px;
     border-radius: 10px;

@@ -52,7 +52,6 @@ export default {
             projectdeliverables:[],
             projectstudents:[],
             project:null,
-            
         }
     },
     async created() {
