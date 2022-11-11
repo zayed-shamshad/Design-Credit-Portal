@@ -3,6 +3,9 @@
     <button @click="logout">
         logout
     </button>
+    <button @click="showcreateprojectbox">
+        +++++
+    </button>
     <div class="container">
         <h1>edit</h1>
         <div class="edit-project" v-if="showedit" :v-bind="showedit">
@@ -55,18 +58,21 @@
     <div class="container">
         <h1>Projects</h1>
         <div class="create-project">
-            <label for="create-post">Say something ... </label>
-            <input type="text" id="create-post" v-model="title" placeholder="add title">
-            <input type="text" id="create-post" v-model="description" placeholder="add description">
-            <input type="number" id="create-post" v-model="number" placeholder="add number of students">
-            <input type="text" id="create-post" v-model="department" placeholder="add department">
-            <input type="text" id="create-post" v-model="deliverables[0]" placeholder="add deliverable 1">
-            <input type="text" id="create-post" v-model="deliverables[1]" placeholder="add deliverable 2">
-            <input type="text" id="create-post" v-model="deliverables[2]" placeholder="add deliverable 3">
-            <input type="text" id="create-post" v-model="skills[0]" placeholder="add skill1">
-            <input type="text" id="create-post" v-model="skills[1]" placeholder="add skill2">
-            <input type="text" id="create-post" v-model="skills[2]" placeholder="add skill3">
-            <button v-on:click="addproject">Post!</button>
+            <form v-on:submit="addproject">
+                <div class="creat-project-inside-form">
+            <input type="text" id="create-post" v-model="title" placeholder="add title" required>
+            <input type="text" id="create-post" v-model="description" placeholder="add description" required>
+            <input type="number" id="create-post" v-model="number" placeholder="add number of students" required>
+            <input type="text" id="create-post" v-model="department" placeholder="add department" required>
+            <input type="text" id="create-post" v-model="deliverables[0]" placeholder="add deliverable 1" required>
+            <input type="text" id="create-post" v-model="deliverables[1]" placeholder="add deliverable 2" required>
+            <input type="text" id="create-post" v-model="deliverables[2]" placeholder="add deliverable 3" required>
+            <input type="text" id="create-post" v-model="skills[0]" placeholder="add skill1" required>
+            <input type="text" id="create-post" v-model="skills[1]" placeholder="add skill2" required>
+            <input type="text" id="create-post" v-model="skills[2]" placeholder="add skill3" required>
+            <button type="submit">Add</button>
+                </div>
+            </form>
         </div>
         <hr>
         <div class="allprojects">
@@ -114,6 +120,7 @@ export default {
     name: 'professor',
     data() {
         return {
+            showcreateproject: false,
             
 
             socket:null,
@@ -223,6 +230,10 @@ export default {
         //         this.notifproject[i] =await projectservice.getaproject(notifs[i].projectid);
         //     }
         // },
+        showcreateprojectbox(){
+            this.showcreateproject = true;
+            document.getElementsByClassName("create-project")[0].classList.toggle("show");
+        },
         logout(){
             localStorage.removeItem('professortoken');
             this.$router.push('/professorloginpage');
@@ -234,6 +245,7 @@ export default {
             this.showedit=!this.showedit;
            this.editindex=ind;
         },
+        
         async deleteproject(index) {
             try {
                 await projectservice.deleteproject(this.projects[index]._id);
@@ -300,7 +312,8 @@ export default {
             await profservice.updateprof(this.prof._id, this.prof.name, this.prof.email, this.prof.department, this.prof.projects, this.prof.notifs);
             this.socket.emit("rejectstudent", this.notifstudent[ind].requestsstatus, this.notifstudent[ind].notifs, this.notifstudent[ind]._id, this.notifproject[ind].title, this.notifproject[ind].description, this.notifproject[ind].department);
         },
-      async addproject(){
+      async addproject(e){
+        e.preventDefault();
         await projectservice.insertproject(this.title,this.description,this.status,this.number,this.department,this.skills,this.profid,this.deliverables,this.evaluationstatus).then(async(res)=>{
             this.title="";
             this.description="";
@@ -316,6 +329,7 @@ export default {
                     console.log("updated the prof sucessfully",ress.data);
                     this.projects = await allprojectservice.getprojectsbyprof(this.profid);
                     console.log("the projects are ",this.projects);
+                    document.getElementsByClassName("create-project")[0].classList.toggle("show");
                 }
             );
         },(err)=>{
@@ -326,7 +340,12 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style>
+.root {
+    --blue: #00ADB5;
+    --white: #EEEEEE;
+}
+@import "../assets/professorpage.css";
 .edit-project{
     display: flex;
     flex-direction: column;
@@ -389,6 +408,6 @@ p.text {
     justify-content: space-between;
     max-height:400vh;
     align-items:flex-start;
-    background-color: aquamarine;
+    background-color:var(--blue)
 }
 </style>

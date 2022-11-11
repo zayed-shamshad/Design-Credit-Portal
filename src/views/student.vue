@@ -1,31 +1,51 @@
 <template>
-    <button @click="shownotifs">
-        show notifications
-    </button>
-    <div class="sidepanel" v-if="showNotifs && notifs">
-                <h3>
-                    {{notifs.projectid}}
-                </h3>
-                <h3>
-                    {{notifs.message}}
-                </h3>
-                <h3>
-                    <button @click="remove()">X</button>
-                </h3>
+    <div class="navbar">
+        <button @click="shownotifs">
+            show notifications
+        </button>
+        <button @click="logout">
+            logout
+        </button>
     </div>
-    <button @click="logout">
-logout
-    </button>
+
+    <div class="sidepanel" v-if="showNotifs">
+        <div v-if="notifs">
+<h3>
+    {{notifs.projectid}}
+</h3>
+<h3>
+    {{notifs.message}}
+</h3>
+<h3>
+    <button @click="remove()">X</button>
+</h3>
+        </div>
+        <div v-else>
+            <h3>
+                no notifications
+            </h3>
+
+        </div>
+               
+    </div>
+
+    <div class="myproject-outside" v-if="requestsstatus=='accepted'">
     <div v-if="requestsstatus=='accepted'" class="project-card">
         <h2>{{myproject.title }}</h2>
         <p>{{ myproject.description }}</p>
         <p>{{ myproject.department }}</p>
+        <p>{{myproject.deliverables[0]}}</p>
+        <p>{{myproject.deliverables[1]}}</p>
+        <p>{{myproject.deliverables[2]}}</p>
+        <p>{{myproject.professor}}</p>
 
+    </div>
     </div>
     <div v-if='requestsstatus == "notApplied" || requestsstatus == "pending" || requestsstatus=="rejected"' class="department-container">
         <div v-for="i in cards" :key="i" class="department-card">
-             {{i}}
-             <button v-on:dblclick="routetodepartment(i)">
+            <div>{{i}}
+                </div>
+             <button v-on:click="routetodepartment(i)">
                 checkout
              </button>
         </div>
@@ -38,6 +58,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import projectservice from '../getprojectservice';
 import studentservice from '../services/getstudent';
+import profservice from '../services/getprofs';
 export default {
     name: 'student',
     data() {
@@ -55,7 +76,9 @@ export default {
             myproject: {
                 title: '',
                 description: '',
-                department: ''
+                department: '',
+                deliverables:[],
+                professor:'',
             },
             skills:[],
             rejected:[],
@@ -110,15 +133,17 @@ export default {
                 this.skills=response.data.student.skills;
                 console.log("this is notifs in studentPage",this.notifs);
                 
-                
                 console.log("this is the project of the student ",response.data.student.project);
                     try{
-                    await projectservice.getaproject(response.data.student.project).then(res => {
+                    await projectservice.getaproject(response.data.student.project).then(async res => {
                         console.log(res);
                         this.myproject.title=res.title;
                         this.myproject.description=res.description;
                         this.myproject.department=res.department;
-                    
+                        this.myproject.deliverables=res.deliverables;
+                        await profservice.getprofbyid(res.professor).then(res => {
+                            this.myproject.professor=res.name;
+                        })
                     })
                     }
                     catch(err){
@@ -157,17 +182,71 @@ export default {
 }
 </script>
 <style>
+.body{
+    margin:0;
+    padding:0;
+}
+.navbar{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+   
+    align-items: center;
+
+    background-color:rgb(255, 255, 255);
+    color:white;
+    width:100vw;
+}
+.navbar button{
+    background-color:var(--blue);
+    color:var(--white);
+    border:none;
+    font-size:20px;
+    font-weight:bold;
+    transition:all 0.3s ease;
+    border-radius: 10px;
+    margin:20px;
+}
+.navbar button:hover{
+    background-color:rgb(255, 255, 255);
+    color:var(--blue);
+    border:none;
+    font-size:20px;
+    font-weight:bold;
+}
+:root {
+    --blue: navy;
+    --white: #ffffff;
+}
+.myproject-outside{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color:var(--blue);
+}
 .department-container{
     display: flex;
     flex-wrap: wrap;
-
     justify-content: space-between;
     flex-direction: row;
-
+    background-color:navy;
+    width:100vw;
+}
+.department-container button{
+    background-color:var(--blue);
+    color:var(--white);
+    border:none;
+    font-size:20px;
+    font-weight:bold;
+    transition:all 0.3s ease;
+    border-radius: 10px;
 }
 .department-card{
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
+    min-width:300px;
+    min-height:300px;
     background-color: #f1f1f1;
     margin: 10px;
     border-radius: 10px;
@@ -176,10 +255,11 @@ export default {
     align-items: center;
     font-size: 20px;
     font-weight: bold;
+    flex-direction: column;
 }
 .project-card {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 350px;
     background-color: #f1f1f1;
     margin: 10px;
     border-radius: 10px;
@@ -194,8 +274,9 @@ export default {
     width: 20vw;
     height: 100vh;
     position: fixed;
-    background-color: #f1f1f1;
+    background-color:var(--blue);
     display: flex;
+    color:var(--white);
     flex-direction: column;
     justify-content: space-evenly;
     z-index: 1;

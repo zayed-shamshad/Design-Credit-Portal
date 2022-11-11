@@ -1,9 +1,21 @@
 <template>
     <h3>{{error}}</h3>
+    <div class="signup-page-outside-form" >
+        <form v-on:submit="login">
+            <div class="signup-page">
+                <label>
+                    email:
+                </label>
     <input type="text" v-model="email">
+    <label>
+        password:
+    </label>
     <input type="text" v-model="password">
-    <button @click="login">Login</button>
+    <button type="submit">Login</button>
+    </div>
+    </form>
     <button @click="signup">no account? </button>
+    </div>
 </template>
 <script>
 //import studentservice from '../services/getstudent'
@@ -26,7 +38,8 @@ export default {
          signup(){
             this.$router.push('/studentregisterpage');
         },
-        login(){
+        login(e){
+            e.preventDefault()
             axios.post(
                 'http://localhost:5000/studentregister/login',
                 {
@@ -60,5 +73,5 @@ export default {
 </script>
 
 <style>
-
+@import "../assets/basecss.css";
 </style>

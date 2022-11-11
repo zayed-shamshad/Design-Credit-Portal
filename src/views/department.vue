@@ -93,25 +93,45 @@ export default {
                       );
                       this.requestsstatus = 'pending';
                       await studentservice.updatestudent(this.student, this.name, this.department, this.email,  this.myproject, this.requestsstatus)
+                    }).finally(()=>{
+                        alert("applied for the project successfully ");
                     })
                     });
-                  
         }
     }
    
 }
 </script>
 <style>
+
 .project-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: row;
-}
+    background-color:var(--blue);
+    width:100vw;
+    min-height:100vh;
+    align-content: center;
+    align-items: center;
 
+}
 .project-card {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 350px;
+    background-color: #f1f1f1;
+    margin: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+.project-card button{
+    width: 100px;
+    height: 50px;
     background-color: #f1f1f1;
     margin: 10px;
     border-radius: 10px;

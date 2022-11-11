@@ -32,6 +32,7 @@ export default {
             this.name=student.name;
             this.email=student.email;
             this.department=student.department;
+            
         }
         catch(err){
             this.error=err;

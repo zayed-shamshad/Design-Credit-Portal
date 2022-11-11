@@ -1,24 +1,39 @@
 <template>
     <h3>{{ error }}</h3>
+    <div class="signup-page-outside-form">
+        <form v-on:submit="signup">
+            <div class="signup-page">
     <label>
         email:
-    <input type="text" v-model="email">
+    <input type="email" v-model="email" required>
     </label>
     <label>
         password:
-    <input type="text" v-model="password">
+    <input type="password" v-model="password" required>
     </label>
-    <label>
-        department
-    <input type="text" v-model="department">
-    </label>
+    <label for="department">Choose a department:</label>
+    <select id="department" name="department" v-model="department" required>
+        <option value="EE">EE</option>
+        <option value="CSE">CSE</option>
+        <option value="ME">ME</option>
+        <option value="BB">BB</option>
+        <option value="CH">CH</option>
+        <option value="MT">MT</option>
+        <option value="CI">CI</option>
+        <option value="AI">AI</option>
+    </select>
+
     <label>
         name:
-        <input type="text" v-model="name">
+        <input type="text" v-model="name" required>
     </label>
 
-    <button @click="signup">signup</button>
-    <button @click="login">account already exists? </button>
+    <button type="submit">signup</button>
+            </div>
+        </form>
+            <button @click="login">account already exists? </button>
+        </div>
+
 </template>
 <script>
 import studentservice from '../services/getstudent'
@@ -37,7 +52,8 @@ export default {
         login() {
             this.$router.push('/studentloginpage');
         },
-        async signup() {
+        async signup(e) {
+            e.preventDefault() // prevent page reload
             const student = await studentservice.registerstudent(this.name, this.email, this.password,  this.department);
             if(student.status==200){
                 this.$router.push('/studentloginpage');
@@ -51,5 +67,5 @@ export default {
 </script>
 
 <style>
-
+@import "../assets/basecss.css";
 </style>
