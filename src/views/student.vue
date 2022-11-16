@@ -188,7 +188,7 @@ export default {
         },
         logout(){
             localStorage.removeItem('studenttoken');
-            this.$router.push('/studentloginpage');
+            this.$router.replace('/studentloginpage');
         },
         routetodepartment(dept){
             this.$router.push('/department/'+dept);

@@ -33,13 +33,13 @@ export default {
         }
     },
     mounted(){
-        // if(localStorage.getItem('token')){
-        //     this.$router.push('/studentPage');
-        // }
+         if(localStorage.getItem('studenttoken')){
+           this.$router.replace('/studentPage');
+         }
     },
     methods:{
          signup(){
-            this.$router.push('/studentregisterpage');
+            this.$router.replace('/studentregisterpage');
         },
         login(e){
             e.preventDefault()

@@ -63,7 +63,7 @@ export default {
     },
     methods: {
         login() {
-            this.$router.push('/studentloginpage');
+            this.$router.replace('/studentloginpage');
         },
         async signup(e) {
             e.preventDefault() // prevent page reload

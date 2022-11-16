@@ -17,6 +17,14 @@ export default {
             studenttoken: localStorage.getItem('studenttoken'),
             professortoken: localStorage.getItem('professortoken'),
         }
+    },
+    mounted(){
+        // if(this.studenttoken){
+        //     this.$router.replace('/studentPage');
+        // }
+        // if(this.professortoken){
+        //     this.$router.replace('/professorPage');
+        // }
     }
 
 }

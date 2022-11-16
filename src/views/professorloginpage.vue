@@ -38,9 +38,9 @@ export default {
     },
     
     mounted() {
-        // if(localStorage.getItem('token')){
-        //     this.$router.push('/studentPage');
-        // }
+        if(localStorage.getItem('professortoken')){
+             this.$router.replace('/professorPage');
+         }
     },
     methods: {
         signup() {

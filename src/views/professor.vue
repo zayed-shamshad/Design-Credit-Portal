@@ -270,7 +270,7 @@ export default {
         },
         logout(){
             localStorage.removeItem('professortoken');
-            this.$router.push('/professorloginpage');
+            this.$router.replace('/professorloginpage');
         },
         async shownotifs(){
             this.showNotifs=!this.showNotifs;
