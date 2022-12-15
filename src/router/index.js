@@ -13,18 +13,49 @@ const router = createRouter({
     {
       path: '/studentPage',
       name: 'student',
-      component: student
+      component: student,
+      children: [
+        {
+          path: 'departments',
+          name: 'alldepartment',
+          component: () => import('../views/alldepartments.vue'),
+          props: true
+        },
+        {
+          path: 'departments/:dept',
+          name: 'department',
+          component: () => import('../views/department.vue'),
+          props: true
+        },
+        {
+          path: 'profile',
+          name: 'profilepage',
+          component: () => import('../views/profilepage.vue'),
+          props: true
+        },
+        {
+          path: 'myproject',
+          name: 'myproject',
+          component: () => import('../views/myproject.vue'),
+          props: true
+        },
+
+
+
+      ]
     },
     {
       path: '/professorPage',
       name: 'professor',
-      component: () => import('../views/professor.vue')
-    },
-    {
-      path: '/department/:dept',
-      name: 'department',
-      component: () => import('../views/department.vue'),
-      props: true
+      component: () => import('../views/professor.vue'),
+      children: [
+        {
+          path: 'profile',
+          name: 'profilepage',
+          component: () => import('../views/profilepage.vue'),
+          props: true
+        },
+      ]
     }
     ,
     {
@@ -67,25 +98,25 @@ const router = createRouter({
 
   ]
 })
-router.beforeEach((to,from) => {
-    const studenttoken = localStorage.getItem('studenttoken')
-    const professorToken = localStorage.getItem('professortoken')
-    if(to.name === 'student' && !studenttoken) {
-      alert('You must be logged in to view this page');
-      return { name: 'studentloginpage' }
-    }
-    if(to.name === 'professor' && !professorToken) {
-      alert('You must be logged in to view this page');
-      return { name: 'professorloginpage' }
-    }
-    if( to.name==='department' && !studenttoken && !professorToken) {
-      alert('You must be logged in to view this page');
-      return { name: 'home' }
-    }
-    if( to.name==='studentprofile' && !professorToken) {
-      alert('You must be logged in to view this page');
-      return { name: 'professorloginpage' }
-    }
+router.beforeEach((to, from) => {
+  const studenttoken = localStorage.getItem('studenttoken')
+  const professorToken = localStorage.getItem('professortoken')
+  if (to.name === 'student' && !studenttoken) {
+    alert('You must be logged in to view this page');
+    return { name: 'studentloginpage' }
+  }
+  if (to.name === 'professor' && !professorToken) {
+    alert('You must be logged in to view this page');
+    return { name: 'professorloginpage' }
+  }
+  if (to.name === 'department' && !studenttoken && !professorToken) {
+    alert('You must be logged in to view this page');
+    return { name: 'home' }
+  }
+  if (to.name === 'studentprofile' && !professorToken) {
+    alert('You must be logged in to view this page');
+    return { name: 'professorloginpage' }
+  }
 });
 
 export default router

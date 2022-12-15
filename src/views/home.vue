@@ -1,72 +1,79 @@
 <template>
-    <!-- <q-layout view="hhh LpR fFf">
-
+    <q-layout view="hhh LpR fFf">
         <q-header reveal elevated class="bg-primary text-white" height-hint="98">
             <q-toolbar>
-                <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
                 <q-toolbar-title>
-                    <q-avatar>
-                        <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-                    </q-avatar>
-                    Title
+                    Design Credit Registration portal
                 </q-toolbar-title>
-
-                <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
             </q-toolbar>
+        </q-header>
 
-            <q-tabs align="left">
-                <q-route-tab to="/page1" label="Page One" />
-                <q-route-tab to="/page2" label="Page Two" />
-                <q-route-tab to="/page3" label="Page Three" />
-            </q-tabs>
-        </q-header> -->
 
-        <!-- <q-drawer v-model="leftDrawerOpen" side="left" overlay bordered> -->
-            <!-- drawer content -->
-        <!-- </q-drawer> -->
+        <q-page-container>
+            <q-page class="row justify-center">
+                <div class="row justify-center items-center" >
+                <q-card class="my-card">
+                    <q-card-section class="bg-primary text-white">
+                        <div class="text-h6">professor</div>
+                    </q-card-section>
+                    <q-separator />
+                    <q-card-actions align="center">
+                        <q-btn flat @click="routetologinstudent()">portal</q-btn>
+                    </q-card-actions>
+                </q-card>
+                <q-card class="my-card">
+                    <q-card-section class="bg-primary text-white">
+                        <div class="text-h6">student</div>
+                    </q-card-section>
+                
+                    <q-separator />
+                
+                    <q-card-actions align="center">
+                        <q-btn flat @click="routetologinprof()">portal</q-btn>
+                    </q-card-actions>
+                </q-card>
+                </div>
+                
+            </q-page>
 
-        <!-- <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered> -->
-            <!-- drawer content -->
-        <!-- </q-drawer> -->
+        </q-page-container>
 
-        <!-- <q-page-container> -->
-            <router-view />
-        <!-- </q-page-container> -->
-
-        <!-- <q-footer bordered class="bg-grey-8 text-white">
+        <q-footer bordered class="bg-grey-8 text-white">
             <q-toolbar>
                 <q-toolbar-title>
-                    <q-avatar>
-                        <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-                    </q-avatar>
-                    <div>Title</div>
                 </q-toolbar-title>
             </q-toolbar>
-        </q-footer> -->
+        </q-footer>
 
-    <!-- </q-layout> -->
+    </q-layout>
 </template>
 
 <script>
-import { ref } from 'vue'
 
 export default {
-  setup () {
-    const leftDrawerOpen = ref(false)
-    const rightDrawerOpen = ref(false)
+    name: 'HomeView',
+    data(){
+        return {
+        }
+    },
+    methods: {
+        routetologinstudent(){
+            this.$router.push('/studentloginpage')
+        },
+        routetologinprof(){
+            this.$router.push('/professorloginpage')
+        }
 
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      },
 
-      rightDrawerOpen,
-      toggleRightDrawer () {
-        rightDrawerOpen.value = !rightDrawerOpen.value
-      }
-    }
-  }
+    },
+  
 }
 </script>
+<style scoped>
+.my-card{
+    width: 300px;
+    max-width: 300px;
+}
+</style>
+
+

@@ -5,10 +5,7 @@
         <q-toolbar>
             <q-btn flat @click="drawerLeft = !drawerLeft" round dense icon="menu" />
             <q-toolbar-title>Header</q-toolbar-title>
-            <q-btn flat @click="drawerRight = !drawerRight" round dense icon="menu" />
         </q-toolbar>
-
-
         </q-header>
         <q-footer>
             <q-toolbar>
@@ -50,6 +47,17 @@
                             Logout
                         </q-item-section>
                     </q-item>
+                  
+                    <q-item clickable v-ripple @click="routetodept()">
+                        <q-item-section avatar>
+                            <q-icon name="square">
+                               
+                            </q-icon>
+                        </q-item-section>
+                        <q-item-section>
+                            departments
+                        </q-item-section>
+                    </q-item>
                 </q-list>
             </q-scroll-area>
         
@@ -78,134 +86,18 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <!-- <q-dialog v-model="showNotifs">
-            <q-card>
-                <q-card-section>
-                    <div class="text-h6">Notification</div>
-                </q-card-section>
-               
-                    <q-card-section v-if="notifproj">
-                        <div class="text-h6">project title:
-                        {{ notifproj }}</div>
-                        <div class="text-h6">response:
-                        {{notifs.message}}</div>
-                        <button @click="remove()">clear notifs</button>
-                    </q-card-section>
-               
-                        <q-card-section class="q-pt-none"  v-else>
-                           no notifs
-                        </q-card-section>
-               
-                <q-card-actions align="right">
-                    <q-btn flat label="OK" color="primary" v-close-popup />
-                </q-card-actions>
-            </q-card>
-        </q-dialog> -->
 
         <q-page-container>
             <q-page>
-                <div class="myproject-outside" v-if="requestsstatus=='accepted'">
-                    <div v-if="requestsstatus=='accepted'" class="project-card">
-                        <div class="q-pa-sm flex flex-center relative-position example-item">
-                            <transition name="q-transition--scale">
-                                <q-card>
-                                    <img src="https://cdn.quasar.dev/img/mountains.jpg">
-                                    <q-card-section>
-                                        <div class="text-h6">{{cards[index]}}</div>
-                                        Title:
-                                        <h2>{{myproject.title }}</h2>
-                                        Description:
-                                        <p>{{ myproject.description }}</p>
-                                        Department:
-                                        <p>{{ myproject.department }}</p>
-                                        Deliverable 1:
-                                        <p>{{myproject.deliverables[0]}}</p>
-                                        Deliverable 2:
-                                        <p>{{myproject.deliverables[1]}}</p>
-                                        Deliverable 3:
-                                        <p>{{myproject.deliverables[2]}}</p>
-                                        Professor:
-                                        <p>{{myproject.professor}}</p>
-                                    </q-card-section>
-                                </q-card>
-                            </transition>
-                        </div>
-                    </div>
-                </div>
-                <div v-if='requestsstatus == "notApplied" || requestsstatus == "pending" || requestsstatus=="rejected"'
-                    class="department-container row">
-                    <div class="q-pa-md">
-                        <div class="row justify-center q-gutter-sm">
-                            <div v-for="index in inView.length" :key="index" :data-id="index - 1"
-                                class="q-pa-sm flex flex-center relative-position example-item" v-intersection="onIntersection">
-                                <transition name="q-transition--scale">
-                                    <q-card v-if="inView[index - 1]">
-                                        <img src="https://cdn.quasar.dev/img/mountains.jpg">
-                                        <q-card-section>
-                                            <div class="text-h6">{{cards[index]}}</div>
-                                            <q-btn class="text-subtitle2" v-on:click="routetodepartment(cards[index])">checkout</q-btn>
-                                        </q-card-section>
-                                    </q-card>
-                                </transition>
-                            </div>
-                        </div>
-                    </div>
-                
-                </div>
-
+                <router-view v-slot="{ Component, route }">
+                    <component :is="Component" v-if="route.name=='myproject'" v-bind:myproject="prop1" >
+                        </component>
+                    <component :is="Component" v-else>
+                    </component>
+                </router-view>
             </q-page>
-
         </q-page-container>
-       
-
-
     </q-layout>
-        <!-- <q-btn @click="shownotifs" v-ripple class="indigo-4">
-            show notifications
-        </q-btn>
-        <q-btn @click="logout" v-ripple>
-            logout
-        </q-btn>
-                <div class="sidepanel" v-if="showNotifs">
-                    <div v-if="notifproj">
-            <div>
-                project title:
-                {{ notifproj }}
-            </div>
-            <div>
-                response:
-                {{notifs.message}}
-            </div>
-            <div>
-                <button @click="remove()">clear notifs</button>
-            </div>
-                    </div>
-        <div v-else>
-            <h3>
-                no notifications
-            </h3>
-
-        </div>
-               
-    </div> -->
-
- 
-    <!-- <div v-for="i in cards" :key="i" class="department-card col wrap">
-                
-                <q-card>
-                    <img src="https://cdn.quasar.dev/img/mountains.jpg">
-                
-                    <q-card-section>
-                        <div class="text-h6">{{i}}</div>
-                        <q-btn v-on:click="routetodepartment(i)" v-ripple color="indigo-4">
-                           checkout
-                        </q-btn>
-                    </q-card-section>
-                </q-card>
-            </div> -->
-    
-
-  
 </template>
 
 <script>
@@ -218,15 +110,17 @@ export default {
     name: 'student',
     data() {
         return {
+            prop1:{
+                title: 'sdasd',
+                description: 'sdasd',
+                department: 'sdad',
+                deliverables: ['sadasd','ssd','sdasd'],
+                professor: 'sdasdsd',
+            },
             drawerLeft: false,
-            drawerRight: false,
-            inView :[false,false,false,false,false,false,false,false,
-        ]
-            ,
             socket:null,
             showNotifs: false,
             notifs:null,
-            cards:['EE','CSE','ME','CIE','CH','BB','MT','AI'],
             error: null,
             name: '',
             department: '',
@@ -244,7 +138,6 @@ export default {
             rejected:[],
             student: null,
             notifproj: "",
-
         }
     },
     mounted(){
@@ -326,13 +219,6 @@ export default {
         }
     }
     ,methods:{
-        onIntersection(entry) {
-            const index = parseInt(entry.target.dataset.id, 10)
-            console.log(index);
-            setTimeout(() => {
-                this.inView.splice(index, 1, entry.isIntersecting)
-            }, 50)
-        },
        async remove(){
             this.notifs={
                 "projectid":null,
@@ -348,17 +234,13 @@ export default {
             localStorage.removeItem('studenttoken');
             this.$router.replace('/studentloginpage');
         },
-        routetodepartment(dept){
-            this.$router.push('/department/'+dept);
-        },
+        routetodept(){
+            this.$router.push({ name: 'alldepartment'})
+        }
     }
 }
 </script>
 <style scoped>
-.example-item{
-  height: 400px;
-  width: 400px;
-}
 .body {
         margin: 0;
         padding: 0;

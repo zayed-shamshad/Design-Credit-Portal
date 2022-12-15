@@ -1,21 +1,26 @@
 <template>
-    <div class="project-container">
-        <div class="project-card" v-for="(project,ind) in getopenprojects" :key="project._id" :value="ind" >
-            <h2>{{project.title }}</h2>
-            <p>{{ project.description }}</p>
-            <p>{{ project.department }}</p>
-            <button v-if="requestsstatus=='notApplied' || requestsstatus=='rejected'" @click="apply(ind)">
-                apply
-            </button>
+    <div class="department-container row">
+        <div class="q-pa-md">
+            <div class="row justify-center q-gutter-sm">
+                <div v-for="(project,ind) in getopenprojects" :key="project._id" :value="ind"
+                    class="q-pa-sm flex flex-center relative-position example-item">
+                    <transition name="q-transition--scale">
+                        <q-card>
+                            <q-card-section>
+                                <div>{{project.title }}</div>
+                                <div>{{ project.description }}</div>
+                                <div>{{ project.department }}</div>
+                                <button @click="apply(ind)">
+                                    apply
+                                </button>
+                            </q-card-section>
+                        </q-card>
+                    </transition>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- <div v-else>
-        <h3 class="noproject">
-            no projects available
-        </h3>
-    </div> -->
 </template>
-
 <script>
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -72,7 +77,6 @@ export default {
         catch (err) {
             this.error = err;
         }
-       
     },
     computed:{
         getopenprojects(){
