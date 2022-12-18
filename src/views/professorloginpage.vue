@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-md" style="max-width: 400px">
-    <q-form ref="myform" @submit="login" @reset="reset"   class="q-gutter-md"
+    <q-form ref="myform" @submit="login" @reset="reset" class="q-gutter-md"
     autofocus greedy
    >
     <q-input v-model="email" label="email" type="text" required
