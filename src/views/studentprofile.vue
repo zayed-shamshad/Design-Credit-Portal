@@ -1,27 +1,16 @@
 <template>
-    <div class="outer-profile">
-
-   
-    <div class="profile-card">
-        <h3>
-            name:{{name}}
-        </h3>
-        <h3 >
-            email:{{email}}
-        </h3>
-        <h3 >
-            department:{{department}}
-        </h3> 
-        <h3 >
-            skills:{{skills[0]}}
-            {{skills[1]}}
-            {{skills[2]}}
-                
-        </h3>
-
-    </div>
-    </div>
-  
+    <q-card>
+        <q-card-section>
+            <div class="text-h6">student profile</div>
+        </q-card-section>
+        <q-separator />
+        <q-card-section>
+            <div class="text-h6">{{name}}</div>
+            <div class="text-h6">{{email}}</div>
+            <div class="text-h6">{{department}}</div>
+            <div class="text-h6" v-for="skill in skills" :key="skill">{{skill}}</div>
+        </q-card-section>
+    </q-card>
 </template>
 
 <script>
@@ -54,22 +43,5 @@ export default {
 </script>
 
 <style>
-.profile-card{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    align-items: center;
-    background-color:var(--white);
-    height:300px;
-    padding:30px;
-    border-radius:10px;
 
-}
-.outer-profile{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: var(--blue);
-}
 </style>

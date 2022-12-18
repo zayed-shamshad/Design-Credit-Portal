@@ -67,27 +67,5 @@ export default {
 </script>
 
 <style>
-.projectdetails{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: var(--blue);
-    width:100vw;
-    color:var(--white);
-    height:100vh;
-}
-.projectdetailsinside{
-    display: flex;
-    justify-content: space-around;
-    padding:10px;
-    flex-direction: column;
-    background-color: var(--white);
-    width:50vw;
-    height:50vh;
-    margin:0 auto;
-    color:var(--blue);
-    margin-top:10vh;
-    border-radius: 10px;
 
-}
 </style>

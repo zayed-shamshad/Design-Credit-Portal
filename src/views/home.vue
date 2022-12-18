@@ -18,7 +18,7 @@
                     </q-card-section>
                     <q-separator />
                     <q-card-actions align="center">
-                        <q-btn flat @click="routetologinstudent()">portal</q-btn>
+                        <q-btn flat @click="routetologinprof()">portal</q-btn>
                     </q-card-actions>
                 </q-card>
                 <q-card class="my-card">
@@ -29,7 +29,7 @@
                     <q-separator />
                 
                     <q-card-actions align="center">
-                        <q-btn flat @click="routetologinprof()">portal</q-btn>
+                        <q-btn flat @click="routetologinstudent()">portal</q-btn>
                     </q-card-actions>
                 </q-card>
                 </div>

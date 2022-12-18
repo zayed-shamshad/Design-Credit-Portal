@@ -112,46 +112,5 @@ export default {
 }
 </script>
 <style>
-.noproject{
-    color:red;
-}
 
-.project-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    flex-direction: row;
-    background-color:var(--blue);
-    width:100vw;
-    min-height:100vh;
-    align-content: center;
-    align-items: center;
-
-}
-.project-card {
-    width: 350px;
-    height: 350px;
-    background-color: #f1f1f1;
-    margin: 10px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-}
-.project-card button{
-    width: 100px;
-    height: 50px;
-    background-color: #f1f1f1;
-    margin: 10px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-}
 </style>

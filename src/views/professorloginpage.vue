@@ -1,53 +1,69 @@
 <template>
-    <h3>{{ error }}</h3>
-    <div class="signup-page-outside-form">
-        <form v-on:submit="login">
-            <div class="signup-page">
-    <label>
-        email:
-        </label>
-     <input type="text" v-model="email">
-    
-    <label>
-        password:
-        </label>
-    
-    <input type="password" v-model="password">
-    
-    <button type="submit">Login</button>
-    </div>
-    </form>
-    <button @click="signup">no account? </button>
-    </div>
+    <div class="q-pa-md" style="max-width: 400px">
+    <q-form ref="myform" @submit="login" @reset="reset"   class="q-gutter-md"
+    autofocus greedy
+   >
+    <q-input v-model="email" label="email" type="text" required
+    lazy-rules="ondemand"
+    :rules="[val => val.length > 0 || 'Please type your email', val => /.+@.+/.test(val) || 'E-mail must be valid']"
+    />
+    <q-input v-model="password" label="password" type="password"
+     lazy-rules="ondemand"
+    :rules="[val => val.length > 0 || 'Please type your password',
+    val => val.length > 3 || 'Password must be more than 5 characters',
+    val => val.length < 15 || 'Password must be less than 15 characters']"
+    />
+    <div>
 
-    
+    <q-btn type="submit" label="submit"/>
+    <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+    </div>
+    </q-form>
+    <q-btn label="signup" elevated @click="signup"/> 
+    </div>
 
 </template>
 <script>
-//import studentservice from '../services/getstudent'
 import axios from 'axios'
+import { Notify } from 'quasar'
 export default {
     name: 'professorloginpage',
     data() {
         return {
-          
             email: '',
             password: '',
             error: null,
         }
     },
-    
     mounted() {
         if(localStorage.getItem('professortoken')){
              this.$router.replace('/professorPage');
          }
     },
     methods: {
+        reset() {
+            this.email = '';
+            this.password = null;
+        },
+        showNotificationUnauth() {
+            Notify.create({
+                message: 'Invalid Credentials',
+                color: 'negative',
+                icon: 'notifications'
+            })
+        },
+        showNotification() {
+            Notify.create({
+                message: 'Login Successful',
+                color: 'positive',
+                icon: 'notifications'
+            })
+        },
         signup() {
             this.$router.push('/professorregisterpage');
         },
-        login(e) {
-            e.preventDefault() 
+        login() {
+            if (this.$refs.myform.validate()) {
             axios.post(
                 'http://localhost:5000/professorregister/login',
                 {
@@ -55,32 +71,24 @@ export default {
                     password: this.password
                 }
             ).then((response) => {
-                console.log(response);
                 if (response.status === 200) {
+                    this.showNotification();
                     localStorage.setItem('professortoken', response.data.professortoken);
                     this.$router.push('/professorPage');
                 }
                 else {
-                    this.error = "Invalid Credentials";
+                   
                 }
+
             }).catch((error) => {
-                console.log(error);
+                this.error = error.response.data;
+                this.showNotificationUnauth();
             });
-            //    await studentservice.loginstudent(this.email,this.password).then((res)=>{
-            //        console.log(this.email);
-            //        console.log(this.password);
-            //        if(res.status==200){
-            //            localStorage.setItem('token',res.data.token);
-            //            this.$router.push('/studentPage');
-            //        }
-            //     }).catch((err)=>{
-            //         this.error=err;
-            //     })
+        }
         }
     }
 }
 </script>
 
 <style>
-@import "../assets/basecss.css";
 </style>

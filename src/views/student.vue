@@ -175,7 +175,6 @@ export default {
                     'studenttoken':localStorage.getItem('studenttoken')
                 }
             }).then(async (response) => {
-
                 this.student=response.data.student._id;
                 this.name=response.data.student.name;
                 this.department=response.data.student.department;
@@ -241,116 +240,5 @@ export default {
 }
 </script>
 <style scoped>
-.body {
-        margin: 0;
-        padding: 0;
-    }
-
-    .navbar {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-
-        align-items: center;
-
-        background-color: rgb(255, 255, 255);
-        color: white;
-        width: 100vw;
-    }
-
-    .navbar button {
-        background-color: var(--blue);
-        color: var(--white);
-        border: none;
-        font-size: 20px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        border-radius: 10px;
-        margin: 20px;
-    }
-
-    .navbar button:hover {
-        background-color: rgb(255, 255, 255);
-        color: var(--blue);
-        border: none;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    :root {
-        --blue: var(--blue);
-        --white: #ffffff;
-    }
-
-    .myproject-outside {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: var(--blue);
-    }
-
-    .department-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        flex-direction: row;
-        background-color: var(--blue);
-        width: 100vw;
-    }
-
-    .department-container button {
-        background-color: var(--blue);
-        color: var(--white);
-        border: none;
-        font-size: 20px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        border-radius: 10px;
-    }
-
-    .department-card {
-        width: 400px;
-        height: 400px;
-        min-width: 300px;
-        min-height: 300px;
-        background-color: #f1f1f1;
-        margin: 10px;
-        border-radius: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 20px;
-        font-weight: bold;
-        flex-direction: column;
-    }
-
-    .project-card {
-        width: 350px;
-
-        background-color: #f1f1f1;
-        margin: 10px;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .sidepanel {
-        width: 20vw;
-        height: 100vh;
-        position: fixed;
-        background-color: var(--blue);
-        display: flex;
-        color: var(--white);
-        flex-direction: column;
-        justify-content: space-evenly;
-        z-index: 1;
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
 
 </style>
