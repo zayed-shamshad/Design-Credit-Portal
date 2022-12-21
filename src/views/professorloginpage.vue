@@ -1,8 +1,20 @@
 <template>
-    <div class="q-pa-md" style="max-width: 400px">
+    <q-layout>
+        <q-header>
+            <q-toolbar>
+                <q-toolbar-title>
+                    <q-btn flat label="Home" @click="routetohome()" />
+                     login
+                </q-toolbar-title>
+            </q-toolbar>
+        </q-header>
+        <q-page-container>
+            <q-page>
+                <div class="q-pa-md flex justify-center align-center items-center" style="width:100vw;height:80vh;">
+    <div class="q-pa-lg justify-center" style="width: 70vw">
     <q-form ref="myform" @submit="login" @reset="reset" class="q-gutter-md"
     autofocus greedy
-   >
+    style="max-width: 800px">
     <q-input v-model="email" label="email" type="text" required
     lazy-rules="ondemand"
     :rules="[val => val.length > 0 || 'Please type your email', val => /.+@.+/.test(val) || 'E-mail must be valid']"
@@ -21,6 +33,10 @@
     </q-form>
     <q-btn label="signup" elevated @click="signup"/> 
     </div>
+    </div>
+    </q-page>
+    </q-page-container>
+    </q-layout>
 
 </template>
 <script>

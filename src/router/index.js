@@ -101,6 +101,19 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const studenttoken = localStorage.getItem('studenttoken')
   const professorToken = localStorage.getItem('professortoken')
+  
+  if(to.name === 'studentloginpage' && studenttoken){
+    return { name: 'student' }
+  }
+  if(to.name === 'professorloginpage' && professorToken){
+    return { name: 'professor' }
+  }
+  if(to.name === 'studentregisterpage' && studenttoken){
+    return { name: 'student' }
+  }
+  if(to.name === 'professorregisterpage' && professorToken){
+    return { name: 'professor' }
+  }
   if (to.name === 'student' && !studenttoken) {
     alert('You must be logged in to view this page');
     return { name: 'studentloginpage' }

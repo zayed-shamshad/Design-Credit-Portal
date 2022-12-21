@@ -31,7 +31,7 @@
                             <q-btn type="submit" label="signup" />
                             <q-btn type="reset" color="primary" flat class="q-ml-sm" label="reset" />
                         </div>
-            
+
                     </q-form>
                     <q-btn @click="login" label="signin" class="row" />
                 </div>

@@ -14,9 +14,9 @@
                
             </q-toolbar>
         </q-header>
-
         <q-page-container>
             <q-page padding>
+                <router-link to="/professor">professor</router-link>
                             <div v-if="showopen"
                                 class="department-container row">
                                     <div class="row justify-center q-gutter-sm">
@@ -58,6 +58,27 @@
                                   
                                 </div>
                                 </div>
+                            </div>
+                            <div v-else class="department-container row">
+                                <div class="row justify-center q-gutter-sm">
+                                    <div v-for="(project, index) in  projects" :item="project" :index="index" :key="project._id"
+                                        class="q-pa-md flex flex-center relative-position example-item">
+                                    <transition name="q-transition--scale">
+                                        <q-card>
+                                            <q-card-section>
+                                                <h3>{{ project.title }}</h3>
+                                                <p class="text">{{ project.description }}</p>
+                                                <p class="text">{{ project.number }}</p>
+                                    
+                                                <q-btn v-on:click="showeditform(index)">Edit </q-btn>
+                                                <q-btn @click="checkoutproject(index)">checkout </q-btn>
+                                            </q-card-section>
+                                        </q-card>
+                                    </transition>
+                                  
+                                </div>
+                                </div>
+
                             </div>
 
 
@@ -187,7 +208,6 @@
                             Save
                         </button>
                     </q-list>
-
                 </form>
                 </q-card-section>
                 <q-card-actions align="right">
@@ -230,7 +250,6 @@
                         <q-card-actions align="right">
                             <q-btn flat label="Cancel" color="primary" v-close-popup />
                         </q-card-actions>
-                    
             </q-card>
                 
         </q-dialog>
@@ -239,6 +258,7 @@
 </template>
 
 <script>
+
 import io from "socket.io-client";
 import axios from 'axios';
 import allprojectservice from '../services/getallprojects'
