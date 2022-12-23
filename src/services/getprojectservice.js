@@ -29,26 +29,15 @@ class projectservice {
         })
     }
 
-    static insertproject(title, description, status, number, department, skills, professor, deliverables) {
-        return axios.post(url, {
-            title,
-            description,
-            status,
-            number,
-            department,
-            skills,
-            professor,
-            deliverables
-        });
+    static insertproject(project) {
+        return axios.post(url, project);
     }
     static deleteproject(id) {
         return axios.delete(`${url}/${id}`);
     }
-    static updateproject(id, title, description, number, department, status, professor, students, skills, evaluationstatus, deliverables) {
-        console.log(id, title, description, number, department, status, professor, students, skills, evaluationstatus, deliverables);
-        return axios.patch(`${url}/${id}`, { title, description, number, department, professor, students, status, skills, evaluationstatus, deliverables });
+    static updateproject(project) {
+        return axios.patch(`${url}/${id}`,project);
     }
-
 }
 export default projectservice;
 

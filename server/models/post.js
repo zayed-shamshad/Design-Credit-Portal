@@ -53,7 +53,7 @@ const projectSchema = mongoose.Schema({
         type:String,
         default: "notEvaluated"
     },
-  deliverables:
+    deliverables:
     {
         type: [String],
         default: []

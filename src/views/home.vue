@@ -7,8 +7,6 @@
                 </q-toolbar-title>
             </q-toolbar>
         </q-header>
-
-
         <q-page-container>
             <q-page class="row justify-center">
                 <div class="row justify-center items-center" >
@@ -25,19 +23,14 @@
                     <q-card-section class="bg-primary text-white">
                         <div class="text-h6">student</div>
                     </q-card-section>
-                
                     <q-separator />
-                
                     <q-card-actions align="center">
                         <q-btn flat @click="routetologinstudent()">portal</q-btn>
                     </q-card-actions>
                 </q-card>
                 </div>
-                
             </q-page>
-
         </q-page-container>
-
         <q-footer bordered class="bg-grey-8 text-white">
             <q-toolbar>
                 <q-toolbar-title>
@@ -63,10 +56,7 @@ export default {
         routetologinprof(){
             this.$router.push('/professorloginpage')
         }
-
-
     },
-  
 }
 </script>
 <style scoped>

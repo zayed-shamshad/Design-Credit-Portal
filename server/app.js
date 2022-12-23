@@ -29,27 +29,25 @@ app.use('/professor', profroute);
 app.use('/student', studentroute);
 app.use('/studentregister', studentregisterroute);
 app.use('/professorregister', professorregisterroute);
-
 const db = "mongodb+srv://zaidshamshad:zaidshamshads@cluster0.ubcegg2.mongodb.net/mydc?retryWrites=true&w=majority";
 mongoose.connect(db, { useNewUrlParser: true }, () => { console.log("connected to db") });
-io.on('connection', function (socket) {
-    console.log('a user connected');
-    socket.emit('message', numb);
+io.on('connection', (socket)=> {
+    socket.emit('profid', socket.id);
+    socket.emit('studentid', socket.id);
     socket.on("acceptstudent",
-        function (data1,data2,data3,title,desc,dept,studentId) {
-            io.emit("studentaccepted", data1,data2,data3,title,desc,dept,studentId);
+        function (projectid,studentId) {
+            io.emit("studentaccepted", projectid, studentId);
         });
     socket.on("rejectstudent",
-        function (requestsstatus,notifs,studentId,title,desc,dept){
-            io.emit("studentrejected", requestsstatus, notifs, studentId, title, desc,dept);
+        function ( projectid,studentId) {
+            io.emit("studentrejected", projectid, studentId);
         });
     socket.on("studentapply",
-        function (profNotifs,studentId,profId,projectId) {
-            io.emit("studentapplied", profNotifs,studentId,profId,projectId);
+        function (studentId, profId, projectId, socketId) {
+            io.emit("studentapplied",studentId, profId, projectId, socketId);
         }
     );
 });
-
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

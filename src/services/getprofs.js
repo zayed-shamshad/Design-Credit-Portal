@@ -2,6 +2,24 @@ import axios from 'axios';
 const urlall = 'http://localhost:5000/professor';
 const url = 'http://localhost:5000/professorregister';
 class profservice {
+    static async getprofbytoken() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.get(url + '/user', {
+                    headers: {
+                        'professortoken': localStorage.getItem('professortoken')
+                    }
+                })
+                const data = res.data;
+                console.log(data);
+                console.log("i m in getprofbytoken", data);
+                resolve(data)
+            }
+            catch (err) {
+                reject(err);
+            }
+        })
+    }
     static registerprof(name, email, password, department) {
         return axios.post(url + "/signup", {
             name,
@@ -28,8 +46,8 @@ class profservice {
             }
         })
     }
-    static updateprof(id, name, email, department, projects, notifs) {
-        return axios.patch(`${urlall}/${id}`, { name, email, department, projects, notifs });
+    static updateprof(updatedprof) {
+        return axios.patch(`${urlall}/${updatedprof.id}`, updatedprof);
     }
 }
 export default profservice;

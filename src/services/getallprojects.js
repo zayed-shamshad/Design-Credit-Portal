@@ -18,7 +18,7 @@ class allprojectservice {
     static getprojectsbydept(department) {
         return new Promise(async (resolve, reject) => {
             try {
-                const res = await axios.get(`${urlall}/`+"dept/"+`${department}`);
+                const res = await axios.get(`${urlall}/` + "dept/" + `${department}`);
                 const data = res.data;
                 resolve(data.map(project => ({
                     ...project,
@@ -32,8 +32,10 @@ class allprojectservice {
     static getprojectsbyprof(professor) {
         return new Promise(async (resolve, reject) => {
             try {
-                const res = await axios.get(`${urlall}/`+"professor/"+`${professor}`);
+                const res = await axios.get(`${urlall}/` + "professor/" + `${professor}`);
                 const data = res.data;
+                
+                console.log("i got executed in getprojectsbyprof");
                 resolve(data.map(project => ({
                     ...project,
                 })));

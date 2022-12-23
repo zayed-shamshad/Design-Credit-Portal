@@ -51,7 +51,6 @@ export default {
                     'studenttoken': localStorage.getItem('studenttoken')
                 }
             }).then((response) => {
-
                 this.name = response.data.student.name;
                 this.department = response.data.student.department;
                 this.email = response.data.student.email;
@@ -70,7 +69,6 @@ export default {
     },
     async created() {
         this.socket=io('http://localhost:5000');
-        console.log('The department is: ' + this.$route.params.dept);
         try {
             this.projects = await allprojectservice.getprojectsbydept(this.$route.params.dept);
         }
@@ -88,27 +86,19 @@ export default {
     methods:{
         async apply(ind) {
             await projectservice.getaproject(this.projects[ind]._id).then(async (response) => {
-                console.log(response);
               await profservice.getprofbyid(response.professor).then(
                     async (res)=>{
-                        console.log(res._id);
                       res.notifs.push({ studentid: this.student, projectid: this.projects[ind]._id });
-                      this.socket.emit('studentapply', res.notifs, this.student, res._id, response._id);
-                      await profservice.updateprof(res._id, res.name, res.email, res.department, res.projects, res.notifs).then(
-                          () => {
-                            console.log("applied for the project and notied the prof by emitting the event ",this.projects[ind]._id,this.student);
-                              
-                          }
-                      );
+                      await profservice.updateprof({ id: res._id, notifs: res.notifs });
                       this.requestsstatus = 'pending';
-                      await studentservice.updatestudent(this.student, this.name, this.department, this.email,  this.myproject, this.requestsstatus)
+                      await studentservice.updatestudent({ id: this.student, requestsstatus: this.requestsstatus})
+                      this.socket.emit('studentapply', this.student, res._id, response._id, this.socket.id);
                     }).finally(()=>{
                         alert("applied for the project successfully ");
                     })
-                    });
+                });
         }
     }
-   
 }
 </script>
 <style>

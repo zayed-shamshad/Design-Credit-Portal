@@ -26,7 +26,6 @@ router.post('/signup', (req, res) => {
 router.post('/login', (req, res) => {
     prof.findOne({ email: req.body.email }, (err, user) => {
         console.log(user)
-
         console.log(req.body.password)
         if (err) return res.status(500).json({
             title: 'server error',
@@ -60,6 +59,7 @@ router.get('/user', (req, res) => {
         })
         prof.findOne({ _id: decoded.userId }, (err, user) => {
             if (err) return console.log(err)
+            console.log("server", user)
             return res.status(200).json({
                 title: 'prof found',
                 prof: {

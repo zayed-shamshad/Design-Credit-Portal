@@ -90,7 +90,7 @@
         <q-page-container>
             <q-page>
                 <router-view v-slot="{ Component, route }">
-                    <component :is="Component" v-if="route.name=='myproject'" v-bind:myproject="prop1" >
+                    <component :is="Component" v-if="route.name=='myproject'" v-bind:myproject="myproject" >
                         </component>
                     <component :is="Component" v-else>
                     </component>
@@ -103,20 +103,13 @@
 <script>
 import io from 'socket.io-client';
 import axios from 'axios';
-import projectservice from '../getprojectservice';
+import projectservice from '../services/getprojectservice';
 import studentservice from '../services/getstudent';
 import profservice from '../services/getprofs';
 export default {
     name: 'student',
     data() {
         return {
-            prop1:{
-                title: 'sdasd',
-                description: 'sdasd',
-                department: 'sdad',
-                deliverables: ['sadasd','ssd','sdasd'],
-                professor: 'sdasdsd',
-            },
             drawerLeft: false,
             socket:null,
             showNotifs: false,
@@ -141,14 +134,13 @@ export default {
         }
     },
     mounted(){
-        this.socket.on('studentaccepted', (data1,data2,data3,title,desc,dept,studentid) => {
+        this.socket.on('studentid', data => {
+            console.group("student here")
+            console.log(data);
+        });
+        this.socket.on('studentaccepted', (projectid,studentid) => {
             if(studentid==this.student){
-                this.notifs = data2;
-                this.requestsstatus = data1;
-                this.project = data3;
-                this.myproject.title = title;
-                this.myproject.description = desc;
-                this.myproject.department = dept;
+                
             }
         });
         this.socket.on('studentrejected', (requestsstatus, notifs, studentId, title, desc, dept) => {
@@ -170,7 +162,7 @@ export default {
             this.error=err;
         }
         try{
-            axios.get('http://localhost:5000/studentregister/user',{
+           await axios.get('http://localhost:5000/studentregister/user',{
                 headers:{
                     'studenttoken':localStorage.getItem('studenttoken')
                 }
@@ -184,7 +176,6 @@ export default {
                 this.rejected=response.data.student.rejected;
                 this.project=response.data.student.project;
                 this.skills=response.data.student.skills;
-                console.log("this is notifs in studentPage",this.notifs);
                 
                 console.log("this is the project of the student ",response.data.student.project);
                     try{
@@ -221,10 +212,12 @@ export default {
        async remove(){
             this.notifs={
                 "projectid":null,
-                "message":''
+                "message":null
             };
-            await studentservice.updatestudent(this.student, this.name, this.department, this.email, this.project, this.requestsstatus, this.notifs, this.skills, this.rejected);
-
+            await studentservice.updatestudent(
+                {
+                 id:this.student,notifs: this.notifs
+                });
         },
         shownotifs(){
             this.showNotifs=!this.showNotifs;
@@ -239,6 +232,3 @@ export default {
     }
 }
 </script>
-<style scoped>
-
-</style>

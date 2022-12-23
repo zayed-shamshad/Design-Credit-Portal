@@ -13,23 +13,12 @@ router.get('/:projectid', (req, res) => {
         }
         )
 });
-
 router.post('/', (req, res) => {
-    const post = new Projects({
-        title: req.body.title,
-        description: req.body.description,
-        number: req.body.number,
-        professor: req.body.professor,
-        students: req.body.students,
-        status: req.body.status,
-        skills: req.body.skills,
-        department: req.body.department,
-        deliverables: req.body.deliverables
-    });
-
+    const post = new Projects(req.body);
+    console.log(post);
     post.save().then(data => {
         res.json(data);
-        console.log("we are in routes/posts",data)
+        console.log("we are in routes/posts", data)
     }).catch(err => {
         res.json({ message: err });
     });
@@ -42,7 +31,6 @@ router.delete('/:projectid', (req, res) => {
         .catch(err => {
             res.json({ message: err });
         });
-
 });
 router.patch('/:projectid', (req, res) => {
     Projects.updateOne({ _id: req.params.projectid }, { $set: { title: req.body.title, description: req.body.description, department: req.body.department, students: req.body.students, number: req.body.number, skills: req.body.skills, status: req.body.status, evaluationstatus: req.body.evaluationstatus, deliverables: req.body.deliverables } })

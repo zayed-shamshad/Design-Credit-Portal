@@ -39,9 +39,6 @@ const router = createRouter({
           component: () => import('../views/myproject.vue'),
           props: true
         },
-
-
-
       ]
     },
     {
@@ -53,6 +50,18 @@ const router = createRouter({
           path: 'profile',
           name: 'profilepage',
           component: () => import('../views/profilepage.vue'),
+          props: true
+        },
+        {
+          path: 'openprojects',
+          name: 'openprojects',
+          component: () => import('../views/openprojects.vue'),
+          props: true
+        },
+        {
+          path: 'closedprojects',
+          name: 'closedprojects',
+          component: () => import('../views/closedprojects.vue'),
           props: true
         },
       ]

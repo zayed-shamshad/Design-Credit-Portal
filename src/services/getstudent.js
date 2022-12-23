@@ -29,8 +29,8 @@ class studentservice {
             }
         })
     }
-    static updatestudent(id, name, department, email, project, requestsstatus,notifs,skills,rejected) {
-        return axios.patch(`${urlall}/${id}`, { name, department, email, project, requestsstatus,notifs,skills,rejected });
+    static updatestudent(student) {
+        return axios.patch(`${urlall}/${id}`, student);
     }
 }
 export default studentservice;
