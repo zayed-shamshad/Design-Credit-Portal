@@ -50,24 +50,21 @@
                                             </q-card-section>
                                         </q-card>
                                     </transition>
-                                  
                                 </div>
                                 </div>
                             </div>
-
             </q-page>
         </q-page-container>
 
         <q-drawer v-model="opendrawer"
-        :width="200"
-        :breakpoint="500"
-        bordered
-        class="bg-grey-3"
-        overlay
-        elevated
+            :width="200"
+            :breakpoint="500"
+            bordered
+            class="bg-grey-3"
+            overlay
+            elevated
         >
         <q-scroll-area class="fit">
-
             <q-list>
                 <q-item clickable v-ripple>
                     <q-item-section avatar>
@@ -178,7 +175,7 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <q-dialog v-model="showNotifs" class="">
+        <q-dialog v-model="showNotifs" class="col justify-center">
             <q-card v-if="notifs.length==0" >
                 <q-card-section>
                     <div class="text-h6">Notifications</div>
@@ -188,32 +185,43 @@
                     no notifs
 
                 </q-card-section>
-                
-                
-               
                 <q-card-actions align="right">
                     <q-btn flat label="Cancel" color="primary" v-close-popup />
                 </q-card-actions>
             </q-card>
-            <q-card v-for="(notification,ind) in notifs" :key="ind" :value="notification">
-                        <q-card-section class="row items-center">
-                            Student Name:
+
+            <q-card v-else class="col items-center justify-center" style="max-width: 500px;">
+                <q-card class="flex items-center justify-between align-center" elevated>
+                    <q-card-section>
+                       Name
+                    </q-card-section>
+                    <q-card-section>
+                       Department
+                    </q-card-section>
+                    <q-card-section>
+                       Project Title
+                    </q-card-section>
+                </q-card>
+                    <q-card class="flex items-center justify-between align-center" elevated v-for="(notification,ind) in notifs" :key="ind" :value="notification">
+                         <q-card-section>
                             {{notifstudent[ind].name}}
-                            Department:
-                            {{notifstudent[ind].department}}
-                       
-                            Project Title:
-                            {{notifproject[ind].title}}
-                            Project Description:
-                            {{notifproject[ind].description}}
+                         </q-card-section>  
+                        <q-card-section>
+                         {{notifstudent[ind].department}}
+                        </q-card-section>
+                        <q-card-section>
+                         {{notifproject[ind].title}}
+                        </q-card-section>
+                        <q-card-action>
                             <q-btn @click="viewStudent(ind)">
                                 view
                             </q-btn>
-                        </q-card-section>
-                        <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="primary" v-close-popup />
-                        </q-card-actions>
+                        </q-card-action>
+                    </q-card>
+                <q-btn flat label="Cancel" color="primary" v-close-popup />
             </q-card>
+
+           
                 
         </q-dialog>
 
@@ -391,15 +399,15 @@ export default {
             }
     },
    mounted(){
-    this.socket.on('studentapplied',async (notifs,studentid,profid,projectid) => {
+    this.socket.on('studentapplied',async (studentid,profid,projectid) => {
+        console.log("recieved the application in professor")
         if(this.profid==profid){
-            this.notifs = notifs;
-            console.log(this.notifstudent);
-            console.log(this.notifproject);
-            for (let i = 0; i < this.notifs.length; i++) {
-                this.notifstudent[i] = await studentservice.getstudentbyid(this.notifs[i].studentid);
-                this.notifproject[i] = await projectservice.getaproject(this.notifs[i].projectid);
-            }
+            const student=await studentservice.getstudentbyid(studentid);
+            const project= await projectservice.getaproject(projectid);
+            this.notifstudent.push(student);
+            this.notifproject.push(project);
+            this.notifs.push({studentid:studentid,projectid:projectid});
+
         }
     })
         this.socket.on('profid',data=>{
@@ -468,7 +476,11 @@ export default {
             }
             let updatedprof={
                 id:this.prof._id,
-                name:this.prof.name,email: this.prof.email, department:this.prof.department,projects: this.projects,notifs: this.prof.notifs
+                name:this.prof.name,
+                email: this.prof.email,
+                department:this.prof.department,
+                projects: this.projects,
+                notifs: this.prof.notifs
             }
             await profservice.updateprof(updatedprof);
         },
@@ -578,7 +590,3 @@ export default {
     }
 }
 </script>
-<style>
-
-
-</style>

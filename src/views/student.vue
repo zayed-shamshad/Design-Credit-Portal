@@ -176,8 +176,7 @@ export default {
                 this.rejected=response.data.student.rejected;
                 this.project=response.data.student.project;
                 this.skills=response.data.student.skills;
-                
-                console.log("this is the project of the student ",response.data.student.project);
+              // console.log("this is the project of the student ",response.data.student.project);
                     try{
                     await projectservice.getaproject(response.data.student.project).then(async res => {
                         console.log(res);
@@ -185,6 +184,7 @@ export default {
                         this.myproject.description=res.description;
                         this.myproject.department=res.department;
                         this.myproject.deliverables=res.deliverables;
+                        if(this.notifs!=null){
                         await projectservice.getaproject(this.notifs.projectid).then(
                             ressss => {
                                 this.notifproj = ressss.title;
@@ -193,6 +193,7 @@ export default {
                         await profservice.getprofbyid(res.professor).then(res => {
                             this.myproject.professor=res.name;
                         })
+                    }
                     })
                     }
                     catch(err){

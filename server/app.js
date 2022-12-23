@@ -43,8 +43,9 @@ io.on('connection', (socket)=> {
             io.emit("studentrejected", projectid, studentId);
         });
     socket.on("studentapply",
-        function (studentId, profId, projectId, socketId) {
-            io.emit("studentapplied",studentId, profId, projectId, socketId);
+        function (studentId, profId, projectId) {
+            console.log("recieved the application")
+            io.emit("studentapplied",studentId, profId, projectId);
         }
     );
 });

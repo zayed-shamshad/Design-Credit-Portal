@@ -36,7 +36,7 @@ class projectservice {
         return axios.delete(`${url}/${id}`);
     }
     static updateproject(project) {
-        return axios.patch(`${url}/${id}`,project);
+        return axios.patch(`${url}/${project.id}`,project);
     }
 }
 export default projectservice;

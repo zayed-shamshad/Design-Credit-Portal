@@ -19,7 +19,6 @@ class studentservice {
             try {
                 const res = await axios.get(`${urlall}/${id}`);
                 const data = res.data;
-                console.log(data);
                 resolve(
                     data
                 )
@@ -30,7 +29,7 @@ class studentservice {
         })
     }
     static updatestudent(student) {
-        return axios.patch(`${urlall}/${id}`, student);
+        return axios.patch(`${urlall}/${student.id}`, student);
     }
 }
 export default studentservice;

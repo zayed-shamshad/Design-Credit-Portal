@@ -10,9 +10,9 @@
                                 <div>{{project.title }}</div>
                                 <div>{{ project.description }}</div>
                                 <div>{{ project.department }}</div>
-                                <button @click="apply(ind)">
+                                <q-btn @click="apply(ind)">
                                     apply
-                                </button>
+                                </q-btn>
                             </q-card-section>
                         </q-card>
                     </transition>
@@ -25,7 +25,7 @@
 import io from 'socket.io-client';
 import axios from 'axios';
 import allprojectservice from '../services/getallprojects'
-import projectservice from '../getprojectservice'
+import projectservice from '../services/getprojectservice'
 import profservice from '../services/getprofs'
 import studentservice from '../services/getstudent'
 export default {
@@ -85,14 +85,14 @@ export default {
     },
     methods:{
         async apply(ind) {
-            await projectservice.getaproject(this.projects[ind]._id).then(async (response) => {
+             await projectservice.getaproject(this.projects[ind]._id).then(async (response) => {
               await profservice.getprofbyid(response.professor).then(
                     async (res)=>{
                       res.notifs.push({ studentid: this.student, projectid: this.projects[ind]._id });
                       await profservice.updateprof({ id: res._id, notifs: res.notifs });
                       this.requestsstatus = 'pending';
                       await studentservice.updatestudent({ id: this.student, requestsstatus: this.requestsstatus})
-                      this.socket.emit('studentapply', this.student, res._id, response._id, this.socket.id);
+                      this.socket.emit('studentapply', this.student, res._id, response._id);
                     }).finally(()=>{
                         alert("applied for the project successfully ");
                     })
