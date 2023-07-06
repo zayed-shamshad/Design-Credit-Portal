@@ -1,61 +1,58 @@
 import axios from 'axios';
-const urlall = 'http://localhost:5000/professor';
-const url = 'http://localhost:5000/professorregister';
-class profservice {
-    static async getprofbytoken() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(url + '/user', {
-                    headers: {
-                        'professortoken': localStorage.getItem('professortoken')
-                    }
-                })
-                const data = res.data;
-                console.log(data);
-                console.log("i m in getprofbytoken", data);
-                resolve(data)
+
+const professorUrl = 'http://localhost:5000/professor';
+const professorRegisterUrl = 'http://localhost:5000/professorregister';
+
+class ProfService {
+    static async getProfByToken() {
+        try {
+            const response = await axios.get(`${professorRegisterUrl}/user`, {
+                headers: {
+                    professortoken: localStorage.getItem('professortoken')
+                }
+            });
+
+            const data = response.data;
+
+            if (data.prof && data.prof._id) {
+                console.log('getProfByToken executed', data);
+                return data;
+            } else {
+                throw new Error('Invalid response format: missing prof or _id property');
             }
-            catch (err) {
-                reject(err);
-            }
-        })
+        } catch (error) {
+            throw new Error(`Failed to fetch professor by token: ${error.message}`);
+        }
     }
-    static registerprof(name, email, password, department) {
-        return axios.post(url + "/signup", {
+
+    static registerProf(name, email, password, department) {
+        return axios.post(`${professorRegisterUrl}/signup`, {
             name,
             email,
             password,
             department,
         });
     }
-    static loginprof(email, password) {
-        return axios.post(url + "/login", { email, password });
+
+    static loginProf(email, password) {
+        return axios.post(`${professorRegisterUrl}/login`, { email, password });
     }
-    static getprofbyid(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(`${urlall}/${id}`);
-                const data = res.data;
-                console.log(data);
-                resolve(
-                    data
-                )
-            }
-            catch (err) {
-                reject(err);
-            }
-        })
+
+    static async getProfById(id) {
+        try {
+            const response = await axios.get(`${professorUrl}/${id}`);
+            const data = response.data;
+            console.log(data);
+            return data;
+        } catch (error) {
+            throw new Error(`Failed to fetch professor by ID: ${error.message}`);
+        }
     }
-    static updateprof(updatedprof) {
-        return axios.patch(`${urlall}/${updatedprof.id}`, updatedprof);
+
+    static updateProf(updatedProf) {
+        
+        return axios.patch(`${professorUrl}/${updatedProf._id}`, updatedProf);
     }
 }
-export default profservice;
 
-
-
-
-
-
-
-
+export default ProfService;

@@ -1,61 +1,156 @@
-<template>
-  <q-layout view="hhh LpR fFf">
-    <q-header reveal elevated class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-toolbar-title> Design Credit Registration portal </q-toolbar-title>
+<!-- <template>
+  <q-layout view="lHh Lpr lFf">
+    <q-header elevated class="header">
+      <q-toolbar class="toolbar">
+        <q-toolbar-title class="title">Design Credit Registration Portal</q-toolbar-title>
       </q-toolbar>
     </q-header>
-    <q-page-container>
-      <q-page class="row justify-center">
-        <div class="row justify-center items-center">
-          <q-card class="my-card">
-            <q-card-section class="bg-primary text-white">
-              <div class="text-h6">professor</div>
-            </q-card-section>
-            <q-separator />
-            <q-card-actions align="center">
-              <q-btn flat @click="routetologinprof()">portal</q-btn>
-            </q-card-actions>
-          </q-card>
-          <q-card class="my-card">
-            <q-card-section class="bg-primary text-white">
-              <div class="text-h6">student</div>
-            </q-card-section>
-            <q-separator />
-            <q-card-actions align="center">
-              <q-btn flat @click="routetologinstudent()">portal</q-btn>
-            </q-card-actions>
-          </q-card>
+    <q-page-container class="page-container">
+      <q-page class="landing-page">
+        <div class="content">
+          <div class="q-gutter-lg row justify-center">
+            <div class="title">Welcome to the Design Credit Registration Portal</div>
+            <div class="buttons row">
+              <q-btn
+                color="primary"
+                class="student-btn"
+                size="lg"
+                @click="redirectTo('/studentloginpage')"
+              >
+                Student Portal
+              </q-btn>
+              <q-btn
+                color="secondary"
+                class="professor-btn"
+                size="lg"
+                @click="redirectTo('/professorloginpage')"
+              >
+                Professor Portal
+              </q-btn>
+            </div>
+          </div>
         </div>
       </q-page>
     </q-page-container>
-    <q-footer bordered class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title> </q-toolbar-title>
-      </q-toolbar>
+  </q-layout>
+</template> -->
+<template>
+  <q-layout>
+    <q-header class="navbar">
+      <div class="q-pa-md">
+        <div class="row justify-center">
+          <h1 class="navbar-title">Design Credit Portal</h1>
+        </div>
+      </div>
+    </q-header>
+
+    <q-page-container>
+      <div class="content">
+        <div class="row justify-center">
+          <div class="button-container">
+            <q-btn
+              class="action-button"
+              label="Student"
+              color="primary"
+              flat
+               @click="redirectTo('/studentloginpage')"
+              rounded
+            />
+            <q-btn
+              class="action-button"
+              label="Faculty"
+              color="secondary"
+              flat
+             @click="redirectTo('/professorloginpage')" 
+              rounded
+            />
+          </div>
+        </div>
+      </div>
+    </q-page-container>
+
+    <q-footer class="footer">
+      <div class="row justify-center">
+        <p>&copy; 2023 Design Credit Portal. All rights reserved.</p>
+      </div>
     </q-footer>
   </q-layout>
 </template>
 
+<style>
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-button {
+  margin: 0 10px;
+}
+
+.footer {
+  background-color: #f5f5f5;
+  padding: 10px;
+  text-align: center;
+  color: #000;
+}
+</style>
+
+
 <script>
 export default {
-  name: "HomeView",
-  data() {
-    return {};
-  },
+  name: 'LandingPage',
   methods: {
-    routetologinstudent() {
-      this.$router.push("/studentloginpage");
-    },
-    routetologinprof() {
-      this.$router.push("/professorloginpage");
+    redirectTo(route) {
+      this.$router.push(route);
     },
   },
 };
 </script>
+<!-- 
 <style scoped>
-.my-card {
-  width: 300px;
-  max-width: 300px;
+.landing-page {
+  background-color: #f1f5f9;
 }
-</style>
+
+.header {
+  background-color: #ffffff;
+  color: #1e2022;
+}
+
+.toolbar {
+  justify-content: center;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.buttons {
+  margin-top: 30px;
+}
+
+.student-btn {
+  margin-right: 20px;
+}
+
+.professor-btn {
+  margin-left: 20px;
+}
+</style> -->

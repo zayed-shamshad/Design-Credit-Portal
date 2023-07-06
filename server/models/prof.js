@@ -24,13 +24,11 @@ const profschema = mongoose.Schema({
         ref: 'project',
         default: []
     },
-
     notifs:
     {
         type:[
             {
                 "projectid": mongoose.Schema.Types.ObjectId,
-
                 "studentid": mongoose.Schema.Types.ObjectId,
             }
         ]

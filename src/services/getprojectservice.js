@@ -1,50 +1,41 @@
 import axios from 'axios';
-const urlall = 'http://localhost:5000/projects';
-const url = 'http://localhost:5000/posts';
-class projectservice {
-    static getprojects() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(urlall);
-                const data = res.data;
-                resolve(data.map(project => ({
-                    ...project,
-                })));
-            }
-            catch (err) {
-                reject(err);
-            }
-        })
-    }
-    static getaproject(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(`${url}/${id}`);
-                const data = res.data;
-                resolve(data);
-            }
-            catch (err) {
-                reject(err);
-            }
-        })
+
+const projectsUrl = 'http://localhost:5000/projects';
+const postsUrl = 'http://localhost:5000/posts';
+
+class ProjectService {
+    static async getProjects() {
+        try {
+            const response = await axios.get(projectsUrl);
+            const projects = response.data.map(project => ({ ...project }));
+            return projects;
+        } catch (error) {
+            throw new Error(`Failed to fetch projects: ${error.message}`);
+        }
     }
 
-    static insertproject(project) {
-        return axios.post(url, project);
+    static async getAProject(id) {
+        try {
+            const response = await axios.get(`${postsUrl}/${id}`);
+            const project = response.data;
+            return project;
+        } catch (error) {
+            console.log(error)
+            throw new Error(`Failed to fetch project: ${error.message}`);
+        }
     }
-    static deleteproject(id) {
-        return axios.delete(`${url}/${id}`);
+
+    static insertProject(project) {
+        return axios.post(postsUrl, project);
     }
-    static updateproject(project) {
-        return axios.patch(`${url}/${project.id}`,project);
+
+    static deleteProject(id) {
+        return axios.delete(`${postsUrl}/${id}`);
+    }
+
+    static updateProject(project) {
+        return axios.patch(`${postsUrl}/${project._id}`, project);
     }
 }
-export default projectservice;
 
-
-
-
-
-
-
-
+export default ProjectService;

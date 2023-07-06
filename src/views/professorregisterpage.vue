@@ -1,5 +1,22 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
+   <q-ajax-bar />
+  <q-layout>
+    <q-header class="bg-black">
+      <q-toolbar>
+        <q-toolbar-title>
+          <q-btn flat label="Home" @click="routetohome()" />
+          signup
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+    <q-page-container>
+      <q-page>
+        <div
+          class="q-pa-md flex justify-center align-center items-center"
+          style="width: 100vw; height: 80vh"
+        >
+
+  <div class="q-pa-md" style="width: 500px;max-width: 700px">
     <q-form @submit="signup" @reset="reset" class="q-gutter-md" greedy>
       <q-input
         type="email"
@@ -44,7 +61,6 @@
         transition-show="flip-up"
         hide-dropdown-icon
         transition-hide="flip-down"
-        style="width: 600px"
         options-cover
         menu-offset="[100,100]"
         label="Department"
@@ -63,8 +79,13 @@
     </q-form>
     <q-btn @click="login" label="signin" />
   </div>
+</div>
+   </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 <script>
+import ProfService from "../services/getprofs";
 import profservice from "../services/getprofs";
 export default {
   name: "professorregisterpage",
@@ -79,11 +100,14 @@ export default {
     };
   },
   methods: {
+    routetohome() {
+      this.$router.push("/");
+    },
     login() {
       this.$router.push("/professorloginpage");
     },
     async signup() {
-      const prof = await profservice.registerprof(
+      const prof = await ProfService.registerProf(
         this.name,
         this.email,
         this.password,

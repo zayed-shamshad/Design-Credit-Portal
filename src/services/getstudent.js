@@ -1,9 +1,11 @@
 import axios from 'axios';
-const urlall = 'http://localhost:5000/student';
-const url = 'http://localhost:5000/studentregister';
-class studentservice {
-    static registerstudent(name, email, password, department,skills) {
-        return axios.post(url + "/signup", {
+
+const studentUrl = 'http://localhost:5000/student';
+const studentRegisterUrl = 'http://localhost:5000/studentregister';
+
+class StudentService {
+    static registerStudent(name, email, password, department, skills) {
+        return axios.post(`${studentRegisterUrl}/signup`, {
             name,
             email,
             password,
@@ -11,33 +13,24 @@ class studentservice {
             skills
         });
     }
-    static loginstudent(email, password) {
-       return axios.post(url + "/login", {email, password});
+
+    static loginStudent(email, password) {
+        return axios.post(`${studentRegisterUrl}/login`, { email, password });
     }
-    static getstudentbyid(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(`${urlall}/${id}`);
-                const data = res.data;
-                resolve(
-                    data
-                )
-            }
-            catch (err) {
-                reject(err);
-            }
-        })
+
+    static async getStudentById(id) {
+        try {
+            const response = await axios.get(`${studentUrl}/${id}`);
+            const data = response.data;
+            return data;
+        } catch (error) {
+            throw new Error(`Failed to fetch student by ID: ${error.message}`);
+        }
     }
-    static updatestudent(student) {
-        return axios.patch(`${urlall}/${student.id}`, student);
+
+    static updateStudent(student) {
+        return axios.patch(`${studentUrl}/${student._id}`, student);
     }
 }
-export default studentservice;
 
-
-
-
-
-
-
-
+export default StudentService;

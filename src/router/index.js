@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import student from '../views/student.vue'
+import {studentStore} from '../stores/student.js'
 import home from '../views/home.vue'
+import axios from 'axios'
+import ProjectService from '../services/getprojectservice'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -8,77 +11,88 @@ const router = createRouter({
       path: '/',
       name: 'homepage',
       component: home,
-
     },
+
     {
       path: '/studentPage',
       name: 'student',
       component: student,
+      beforeEnter:async (to, from, next) => {
+               const studentstore=studentStore();
+             try {
+                   const { data } = await axios.get("http://localhost:5000/studentregister/user", {
+                     headers: {
+                       studenttoken: localStorage.getItem("studenttoken"),
+                     },
+                   });
+
+                   if(data.student.project){
+                    
+                    const res=await ProjectService.getAProject(data.student.project);
+                    console.log(res)
+                     const student = {
+                       id: data.student._id,
+                       name: data.student.name,
+                       email: data.student.email,
+                       department: data.student.department,
+                       skills: data.student.skills,
+                       requestsstatus: data.student.requestsstatus,
+                       myproject: res,
+                       project: data.student.project,
+                       notifs: data.student.notifs,
+                       rejected: data.student.rejected,
+                     }
+                     studentstore.setStudent(student);
+                    }
+                    else{
+                      const student = {
+                        id: data.student._id,
+                        name: data.student.name,
+                        email: data.student.email,
+                        department: data.student.department,
+                        skills: data.student.skills,
+                        requestsstatus: data.student.requestsstatus,
+                        myproject: null,
+                        project: data.student.project,
+                        notifs: data.student.notifs,
+                        rejected: data.student.rejected,
+                      }
+                      studentstore.setStudent(student);
+                    }
+                   next();
+                 } catch (error) {
+                  console.log(error)
+                   next(false);
+                 }
+                },
+      redirect: { name: 'home' },
       children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('../components/studenthome.vue'),
+          props: true
+        },
         {
           path: 'departments',
           name: 'alldepartment',
-          component: () => import('../views/alldepartments.vue'),
-          props: true
+          component: () => import('../components/alldepartments.vue'),
         },
         {
           path: 'departments/:dept',
           name: 'department',
           component: () => import('../views/department.vue'),
           props: true
-        },
-        {
-          path: 'profile',
-          name: 'profilepage',
-          component: () => import('../views/profilepage.vue'),
-          props: true
-        },
-        {
-          path: 'myproject',
-          name: 'myproject',
-          component: () => import('../views/myproject.vue'),
-          props: true
-        },
+        }
       ]
+
     },
     {
       path: '/professorPage',
       name: 'professor',
       component: () => import('../views/professor.vue'),
-      children: [
-        {
-          path: 'profile',
-          name: 'profilepage',
-          component: () => import('../views/profilepage.vue'),
-          props: true
-        },
-        {
-          path: 'openprojects',
-          name: 'openprojects',
-          component: () => import('../views/openprojects.vue'),
-          props: true
-        },
-        {
-          path: 'closedprojects',
-          name: 'closedprojects',
-          component: () => import('../views/closedprojects.vue'),
-          props: true
-        },
-      ]
     }
     ,
-    {
-      path: '/project/:id',
-      name: 'project',
-      component: () => import('../views/projectdetails.vue'),
-      props: true
-    },
-    {
-      path: '/student/:student',
-      name: 'studentprofile',
-      component: () => import('../views/studentprofile.vue'),
-      props: true
-    },
     {
       path: '/studentloginpage',
       name: 'studentloginpage',

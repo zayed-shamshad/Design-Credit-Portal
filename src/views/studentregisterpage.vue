@@ -1,30 +1,30 @@
 <template>
+  <q-ajax-bar />
   <q-layout>
-    <q-header>
+    <q-header class="bg-black">
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
+          Student Register Page
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
-        <div
-          class="q-pa-md flex justify-center align-center items-center"
-          style="width: 100vw; height: 80vh"
-        >
-          <div class="justify-center q-pl-lg" style="width: 700px">
-            <q-form
-              @submit="signup"
-              @reset="reset"
-              ref="myform"
-              greedy
-              style="max-width: 500px"
-            >
+        <div class="login-container">
+          <q-form
+            @submit="signup"
+            @reset="reset"
+            ref="myform"
+            greedy
+            class="q-gutter-md"
+            autofocus
+          >
+            <div class="form-content">
               <q-input
                 type="email"
-                label="email"
-                clear-icon="clear"
+                label="Email"
+                clearable
                 v-model="email"
                 required
                 lazy-rules="ondemand"
@@ -36,22 +36,19 @@
 
               <q-input
                 type="password"
-                label="password"
+                label="Password"
                 v-model="password"
                 required
                 lazy-rules="ondemand"
                 :rules="[
                   (val) => val.length > 0 || 'Please type your password',
-                  (val) =>
-                    val.length > 3 || 'Password must be more than 5 characters',
-                  (val) =>
-                    val.length < 15 ||
-                    'Password must be less than 15 characters',
+                  (val) => val.length > 3 || 'Password must be more than 5 characters',
+                  (val) => val.length < 15 || 'Password must be less than 15 characters',
                 ]"
               />
               <q-input
                 type="text"
-                label="username"
+                label="Username"
                 v-model="name"
                 required
                 autofocus
@@ -85,26 +82,32 @@
                 use-input
               />
 
-              <div class="row">
-                <q-btn type="submit" label="signup" />
+              <div class="button-group">
+                <q-btn type="submit" label="Sign Up" color="primary" />
                 <q-btn
                   type="reset"
                   color="primary"
                   flat
                   class="q-ml-sm"
-                  label="reset"
+                  label="Reset"
                 />
               </div>
-            </q-form>
-            <q-btn @click="login" label="signin" class="row" />
+            </div>
+          </q-form>
+          <div class="login-actions">
+            <span>Already have an account?</span>
+            <q-btn @click="login" label="Sign In" color="primary" flat />
           </div>
         </div>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
-import studentservice from "../services/getstudent";
+import { Notify } from "quasar";
+import StudentService from "../services/getstudent";
+
 export default {
   name: "studentregisterpage",
   data() {
@@ -117,76 +120,21 @@ export default {
       error: null,
       options: ["EE", "CSE", "ME", "CE", "MT", "BB", "CH", "AI"],
       skills: [
-        "web development",
-        "app development",
-        "machine learning",
-        "data science",
-        "blockchain",
-        "cloud computing",
-        "cyber security",
-        "networking",
-        "embedded systems",
-        "robotics",
-        "iot",
-        "digital marketing",
-        "ui/ux",
-        "game development",
-        "cyber security",
-        "networking",
-        "embedded systems",
-        "robotics",
-        "iot",
-        "Vue.js",
-        "React.js",
-        "Angular.js",
-        "Node.js",
-        "Express.js",
-        "MongoDB",
-        "MySQL",
-        "Python",
-        "Java",
-        "C++",
-        "C",
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "PHP",
-        "Ruby",
-        "Swift",
-        "Kotlin",
-        "flutter",
-        "Django",
-        "Laravel",
-        "Spring",
-        "ASP.NET",
-        "flask",
-        "Ruby on Rails",
-        "Bootstrap",
-        "Materialize",
-        "Tailwind",
-        "Sass",
-        "Less",
-        "jQuery",
-        "React Native",
-        "Ionic",
-        "Android",
-        "iOS",
-        "Firebase",
-        "AWS",
-        "Azure",
-        "GCP",
-        "Heroku",
-        "Netlify",
-        "Digital Ocean",
-        "Vercel",
-        "Github",
-        "Gitlab",
-        "Bitbucket",
-        "Jira",
-        "Trello",
-        "Agile",
-        "Scrum",
-        "Kanban",
+        "Web Development",
+        "App Development",
+        "Machine Learning",
+        "Data Science",
+        "Blockchain",
+        "Cloud Computing",
+        "Cyber Security",
+        "Networking",
+        "Embedded Systems",
+        "Robotics",
+        "IoT",
+        "Digital Marketing",
+        "UI/UX",
+        "Game Development",
+        // Add more skills as needed
       ],
     };
   },
@@ -202,7 +150,7 @@ export default {
       this.skillsstudent = [];
       this.error = null;
     },
-    shownotification(type, message) {
+    showNotification(type, message) {
       Notify.create({
         message: message,
         color: type,
@@ -216,7 +164,7 @@ export default {
     },
     async signup() {
       if (this.$refs.myform.validate()) {
-        const student = await studentservice.registerstudent(
+        const student = await StudentService.registerStudent(
           this.name,
           this.email,
           this.password,
@@ -225,10 +173,10 @@ export default {
         );
         if (student.status == 200) {
           this.$router.push("/studentloginpage");
-          this.shownotification("positive", "success");
+          this.showNotification("positive", "Registration successful");
         } else {
           this.error = "Invalid Credentials";
-          this.shownotification("negative", "error");
+          this.showNotification("negative", "Error: Registration failed");
         }
       }
     },
@@ -236,4 +184,107 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  max-width: 400px;
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-actions span {
+  margin-right: 10px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  max-width: 500px; /* Increased width */
+  width: 100%;
+  margin: 0 auto; /* Center the form horizontally */
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-actions span {
+  margin-right: 10px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+
+
+</style>

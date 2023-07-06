@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Post = require('../models/post');
+const Post = require('../models/project');
 router.get('/', (req, res) => {
     Post.find({})
         .then(data => {
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
         )
 });
 router.get('/dept/:dept', (req, res) => {
-    Post.find({"department": req.params.dept})
+    Post.find({ "department": req.params.dept })
         .then(data => {
             res.json(data)
         }

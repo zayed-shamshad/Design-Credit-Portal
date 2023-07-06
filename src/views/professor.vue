@@ -11,6 +11,7 @@
         <q-toolbar-title> portal </q-toolbar-title>
       </q-toolbar>
     </q-header>
+
     <q-page-container>
       <q-page padding>
         <div v-if="showopen" class="department-container row">
@@ -91,12 +92,6 @@
             </q-item-section>
             <q-item-section> notifications </q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="showedit = true">
-            <q-item-section avatar>
-              <q-icon name="edit" />
-            </q-item-section>
-            <q-item-section> edit </q-item-section>
-          </q-item>
           <q-item clickable v-ripple @click="showopenp">
             <q-item-section avatar>
               <q-icon name="laptop" />
@@ -121,24 +116,24 @@
           <q-form @submit="addproject" @reset="reset">
             <q-input
               type="text"
-              v-model="title"
+              v-model="project.title"
               placeholder="add title"
               required
             />
             <q-input
               type="text"
-              v-model="description"
+              v-model="project.description"
               placeholder="add description"
               required
             />
             <q-input
               type="number"
-              v-model="number"
+              v-model="project.number"
               placeholder="add number of students"
               required
             />
             <q-select
-              v-model="departmentproject"
+              v-model="project.department"
               bottom
               end
               :options="departments"
@@ -152,7 +147,7 @@
             <q-select
               label="deliverables"
               filled
-              v-model="deliverables"
+              v-model="project.deliverables"
               use-input
               use-chips
               multiple
@@ -164,7 +159,7 @@
             <q-select
               label="skills required"
               filled
-              v-model="skills"
+              v-model="project.skills"
               multiple
               :options="options"
               counter
@@ -185,7 +180,7 @@
             </div>
           </q-form>
         </q-card-section>
-        <q-card-actions align="right">
+        <q-card-actions :align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
@@ -195,13 +190,13 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-form @submit="updateproject" @reset="resetedit">
-            <q-input type="text" v-model="edittitle" required />
-            <q-input type="text" v-model="editdescription" required />
-            <q-input type="number" v-model="editnumber" required />
+            <q-input type="text" v-model="editProject.title" required />
+            <q-input type="text" v-model="editProject.description" required />
+            <q-input type="number" v-model="editProject.number" required />
             <q-select
               label="deliverables"
               filled
-              v-model="editdeliverables"
+              v-model="editProject.deliverables"
               use-input
               use-chips
               multiple
@@ -212,11 +207,11 @@
             />
             <q-select
               :options="statusproject"
-              v-model="editevaluationstatus"
+              v-model="editProject.status"
               label="project evaluation"
             />
             <q-select
-              v-model="editdepartment"
+              v-model="editProject.department"
               bottom
               end
               :options="departments"
@@ -230,7 +225,7 @@
             <q-select
               label="skills required"
               filled
-              v-model="editskills"
+              v-model="editProject.skills"
               multiple
               :options="options"
               counter
@@ -251,13 +246,13 @@
             </div>
           </q-form>
         </q-card-section>
-        <q-card-actions align="right">
+        <q-card-actions :align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <q-dialog v-model="showNotifs" class="col justify-center">
-      <q-card v-if="notifs.length == 0">
+      <q-card v-if="notifproject.length === 0">
         <q-card-section>
           <div class="text-h6">Notifications</div>
         </q-card-section>
@@ -277,24 +272,26 @@
           <q-card-section> Department </q-card-section>
           <q-card-section> Project Title </q-card-section>
         </q-card>
+
         <q-card
           class="flex items-center justify-between align-center"
           elevated
-          v-for="(notification, ind) in notifs"
+          v-for="(notification, ind) in notifproject"
           :key="ind"
           :value="notification"
         >
           <q-card-section>
-            {{ notifstudent[ind].name }}
+            {{ notification.title }}
           </q-card-section>
           <q-card-section>
-            {{ notifstudent[ind].department }}
+            {{ notification.department }}
           </q-card-section>
           <q-card-section>
-            {{ notifproject[ind].title }}
+            {{ notification.title }}
           </q-card-section>
           <q-card-action>
-            <q-btn @click="viewStudent(ind)"> view </q-btn>
+            <q-btn @click="acceptstudent(ind)"> accept </q-btn>
+            <q-btn @click="rejectstudent(ind)"> reject </q-btn>
           </q-card-action>
         </q-card>
         <q-btn flat label="Cancel" color="primary" v-close-popup />
@@ -305,17 +302,15 @@
 
 <script>
 import io from "socket.io-client";
-import axios from "axios";
-import allprojectservice from "../services/getallprojects";
-import projectservice from "../services/getprojectservice";
-import profservice from "../services/getprofs";
-import studentservice from "../services/getstudent";
+import AllProjectService from "../services/getallprojects";
+import ProjectService from "../services/getprojectservice";
+import ProfService from "../services/getprofs";
+import StudentService from "../services/getstudent";
 export default {
   name: "professor",
   data() {
     return {
       statusproject: ["notEvaluated", "Evaluated", "pending"],
-      departmentproject: "",
       departments: ["CSE", "EE", "ME", "CH", "BB", "AI", "CI", "MT"],
       options: [
         "web development",
@@ -391,45 +386,48 @@ export default {
       ],
 
       opendrawer: false,
-
+      showNotifs: false,
       showopen: true,
       showclosed: true,
-
       showcreateproject: false,
-
       socket: null,
-
-      title: "",
-      description: "",
-      number: 0,
-      status: true,
-      department: "",
-      students: [],
-      skills: [],
-      error: null,
+      showedit: false,
       projects: [],
-      deliverables: [],
-      evaluationstatus: "notEvaluated",
 
-      profid: "",
+      project: {
+        title: "",
+        description: "",
+        number: 0,
+        students: [],
+        skills: [],
+        deliverables: [],
+        status: true,
+        department: "",
+        evaluationstatus: "notEvaluated",
+      },
+      professor: {
+        id: "",
+        name: "",
+        email: "",
+        department: "",
+        projects: [],
+        notifs: [],
+      },
 
-      notifs: [],
+      editProject: {
+        index: 0,
+        title: "",
+        description: "",
+        number: 0,
+        status: true,
+        department: "",
+        skills: [],
+        deliverables: [],
+        evaluationstatus: "",
+      },
+      error: null,
       notifstudent: [],
       notifproject: [],
-      prof: null,
-
-      showedit: false,
-      editindex: 0,
-
-      edittitle: "",
-      editdescription: "",
-      editnumber: 0,
-      editstatus: true,
-      editdepartment: "",
-      editskills: [],
-      editdeliverables: [],
-      editevaluationstatus: "",
-      showNotifs: false,
     };
   },
 
@@ -447,59 +445,69 @@ export default {
   },
   async created() {
     this.socket = io("http://localhost:5000");
-    const prof = await profservice.getprofbytoken();
-    this.profid = prof.prof._id;
-    this.name = prof.prof.name;
-    this.department = prof.prof.department;
-    this.email = prof.prof.email;
-    this.projects = await allprojectservice.getprojectsbyprof(this.profid);
-    this.prof = await profservice.getprofbyid(this.profid);
-    this.notifs = this.prof.notifs;
-    for (let i = 0; i < this.notifs.length; i++) {
-      this.notifstudent[i] = await studentservice.getstudentbyid(
-        this.notifs[i].studentid
-      );
-      this.notifproject[i] = await projectservice.getaproject(
-        this.notifs[i].projectid
-      );
-    }
+    await this.getprof();
+    this.socket.emit("professorConnect", this.professor.id);
+    this.projects = await AllProjectService.getProjectsByProf(
+      this.professor.id
+    );
+    await this.fetchNotification();
   },
-  mounted() {
-    this.socket.on("studentapplied", async (studentid, profid, projectid) => {
-      console.log("recieved the application in professor");
-      if (this.profid == profid) {
-        const student = await studentservice.getstudentbyid(studentid);
-        const project = await projectservice.getaproject(projectid);
-        this.notifstudent.push(student);
-        this.notifproject.push(project);
-        this.notifs.push({ studentid: studentid, projectid: projectid });
-      }
-    });
-    this.socket.on("profid", (data) => {
-      console.log(data);
+  async mounted() {
+    console.log(this.notifstudent.length);
+    this.socket.on("newNotification", async (data) => {
+      await this.getprof();
+      await this.fetchNotification();
+      console.log("i m in sockettt", data);
     });
   },
   methods: {
+    async getprof() {
+      const { prof } = await ProfService.getProfByToken();
+      const { _id, name, email, department, projects, notifs } = prof;
+      this.professor = {
+        id: _id,
+        name,
+        email,
+        department,
+        projects,
+        notifs,
+      };
+    },
+    async fetchNotification() {
+      this.notifstudent = [];
+      this.notifproject = [];
+      if (!this.professor.notifs || this.professor.notifs.length === 0) {
+        return;
+      }
+      await Promise.all(
+        this.professor.notifs.map(async (notif) => {
+          const student = await StudentService.getStudentById(notif.studentid);
+          const project = await ProjectService.getAProject(notif.projectid);
+
+          this.notifstudent.push(student);
+          this.notifproject.push(project);
+        })
+      );
+    },
     resetedit() {
-      this.edittitle = "";
-      this.editdescription = "";
-      this.editnumber = 0;
-      this.editstatus = true;
-      this.editdepartment = "";
-      this.editskills = [];
-      this.editdeliverables = [];
-      this.editevaluationstatus = "notEvaluated";
+      this.editProject.title = "";
+      this.editProject.description = "";
+      this.editProject.number = 0;
+      this.editProject.status = true;
+      this.editProject.department = "";
+      this.editProject.skills = [];
+      this.editProject.deliverables = [];
+      this.editProject.evaluationstatus = "notEvaluated";
     },
     reset() {
-      this.title = "";
-      this.description = "";
-      this.number = 0;
-      this.status = true;
-      this.departmentproject = "";
-      this.students = [];
-      this.skills = [];
-      this.deliverables = [];
-      this.evaluationstatus = "notEvaluated";
+      this.project.title = "";
+      this.project.description = "";
+      this.project.number = 0;
+      this.project.status = true;
+      this.project.department = "";
+      this.project.skills = [];
+      this.project.deliverables = [];
+      this.project.evaluationstatus = "notEvaluated";
     },
     checkoutproject(index) {
       this.$router.push("/project/" + this.getclosedprojects[index]._id);
@@ -521,159 +529,200 @@ export default {
 
     showeditform(ind) {
       this.showedit = true;
-      this.editindex = ind;
-      this.edittitle = this.projects[ind].title;
-      this.editdescription = this.projects[ind].description;
-      this.editnumber = this.projects[ind].number;
-      this.editstatus = this.projects[ind].status;
-      this.editdepartment = this.projects[ind].department;
-      this.editskills = this.projects[ind].skills;
-      this.editdeliverables = this.projects[ind].deliverables;
-      this.editevaluationstatus = this.projects[ind].evaluationstatus;
+      this.editProject.index = ind;
+
+      this.editProject.title = this.projects[ind].title;
+      this.editProject.description = this.projects[ind].description;
+      this.editProject.number = this.projects[ind].number;
+      this.editProject.status = this.projects[ind].status;
+      this.editProject.department = this.projects[ind].department;
+      this.editProject.skills = this.projects[ind].skills;
+      this.editProject.deliverables = this.projects[ind].deliverables.map(
+        (deliverable) => {
+          return deliverable.title;
+        }
+      );
+      this.editProject.evaluationstatus = this.projects[ind].evaluationstatus;
     },
     async deleteproject(index) {
       try {
-        await projectservice.deleteproject(this.projects[index]._id);
+        const deletedProjectId = this.projects[index]._id;
+        await ProjectService.deleteProject(deletedProjectId);
         this.projects.splice(index, 1);
+
+        const { _id, name, email, department, notifs } = this.professor;
+        const updatedProf = {
+          _id,
+          name,
+          email,
+          department,
+          projects: this.projects,
+          notifs,
+        };
+
+        await ProfService.updateProf(updatedProf);
       } catch (err) {
         this.error = err;
       }
-      let updatedprof = {
-        id: this.prof._id,
-        name: this.prof.name,
-        email: this.prof.email,
-        department: this.prof.department,
-        projects: this.projects,
-        notifs: this.prof.notifs,
-      };
-      await profservice.updateprof(updatedprof);
     },
     async updateproject() {
       try {
-        const index = this.editindex;
-        this.projects[index].title = this.edittitle;
-        this.projects[index].description = this.editdescription;
-        this.projects[index].number = this.editnumber;
-        this.projects[index].status = this.editstatus;
-        this.projects[index].department = this.editdepartment;
-        this.projects[index].skills = this.editskills;
-        this.projects[index].deliverables = this.editdeliverables;
-        this.projects[index].evaluationstatus = this.editevaluationstatus;
-        await projectservice.updateproject({
-          id: this.projects[index]._id,
-          title: this.projects[index].title,
-          description: this.projects[index].description,
-          number: this.projects[index].number,
-          department: this.projects[index].department,
-          status: this.projects[index].status,
-          professor: this.projects[index].professor,
-          students: this.projects[index].students,
-          skills: this.projects[index].skills,
-          evaluationstatus: this.projects[index].evaluationstatus,
-          deliverables: this.projects[index].deliverables,
-        });
-        this.projects = await allprojectservice.getprojectsbyprof(this.profid);
+        const index = this.editProject.index;
+        const projectToUpdate = this.projects[index];
+        const updatedProject = {
+          ...projectToUpdate,
+          title: this.editProject.title,
+          description: this.editProject.description,
+          number: this.editProject.number,
+          status: this.editProject.status,
+          department: this.editProject.department,
+          skills: this.editProject.skills,
+          deliverables: this.editProject.deliverables.map((deliverable) => {
+            return {
+              title: deliverable,
+              status: false,
+            };
+          }),
+          evaluationstatus: this.editProject.evaluationstatus,
+        };
+        console.log("updated", updatedProject);
+
+        await ProjectService.updateProject(updatedProject);
+
+        await this.fetchProjectsByProf();
       } catch (err) {
         this.error = err;
       }
     },
-    viewStudent(ind) {
-      this.$router.push("/student/" + this.notifstudent[ind]._id);
-    },
-    async acceptstudent(ind) {
-      this.notifproject[ind].number = this.notifproject[ind].number - 1;
-      this.notifproject[ind].students.push(this.notifstudent[ind]._id);
-      this.prof.notifs.splice(ind, 1);
-      this.notifs = this.prof.notifs;
-      await profservice.updateprof({
-        id: this.prof._id,
-        notifs: this.prof.notifs,
-      });
-      if (this.notifproject[ind].number == 0) {
-        this.notifproject[ind].status = false;
+
+    async fetchProjectsByProf() {
+      try {
+        this.projects = await AllProjectService.getProjectsByProf(
+          this.professor.id
+        );
+        console.log("projects are", this.projects);
+      } catch (err) {
+        this.error = err;
       }
-      await projectservice.updateproject({
-        id: this.notifproject[ind]._id,
-        number: this.notifproject[ind].number,
-        status: this.notifproject[ind].status,
-        students: this.notifproject[ind].students,
-      });
-      this.notifstudent[ind].project = this.notifproject[ind]._id;
-      this.notifstudent[ind].requestsstatus = "accepted";
-      this.notifstudent[ind].notifs = {
-        projectid: this.notifproject[ind]._id,
-        message: "accepted",
-      };
-      //this.notifstudent[ind].notifs.message="accepted";
-      await studentservice.updatestudent({
-        id: this.notifstudent[ind]._id,
-        project: this.notifstudent[ind].project,
-        requeststatus: this.notifstudent[ind].requestsstatus,
-        notifs: this.notifstudent[ind].notifs,
-      });
-      this.projects = await allprojectservice.getprojectsbyprof(this.profid);
-      this.socket.emit(
-        "acceptstudent",
-        this.notifstudent[ind].project,
-        this.notifstudent[ind]._id
-      );
     },
-    async rejectstudent(ind) {
-      this.notifstudent[ind].requestsstatus = "rejected";
-      this.prof.notifs.splice(ind, 1);
-      this.notifs = this.prof.notifs;
-      this.notifstudent[ind].notifs = {
-        projectid: this.notifproject[ind]._id,
-        message: "rejected",
+
+    async acceptstudent(ind) {
+      const notifProject = this.notifproject[ind];
+      const notifStudent = this.notifstudent[ind];
+      const updatedProject = {
+        ...notifProject,
+        number: notifProject.number - 1,
+        students: [...notifProject.students, notifStudent._id],
       };
-      this.notifstudent[ind].rejected.push(this.notifproject[ind]._id);
-      await studentservice.updatestudent({
-        id: this.notifstudent[ind]._id,
-        requeststatus: this.notifstudent[ind].requestsstatus,
-        notifs: this.notifstudent[ind].notifs,
-        rejected: this.notifstudent[ind].rejected,
+
+      const updatedProfessor = {
+        ...this.professor,
+        notifs: this.professor.notifs.filter((_, index) => index !== ind),
+      };
+
+      const newNotifs = notifStudent.notifs.push({
+        projectid: notifProject._id,
+        message: "accepted",
       });
 
-      await profservice.updateprof({
-        id: this.prof._id,
-        notifs: this.prof.notifs,
+      const updatedStudent = {
+        ...notifStudent,
+        notifs: newNotifs,
+        project: notifProject._id,
+      };
+
+      console.log("updated prof", updatedProfessor);
+
+      await Promise.all([
+        ProfService.updateProf(updatedProfessor),
+        ProjectService.updateProject({
+          ...notifProject,
+          number: updatedProject.number,
+          status: updatedProject.number === 0 ? false : notifProject.status,
+          students: updatedProject.students,
+        }),
+        StudentService.updateStudent(updatedStudent),
+      ]);
+      await this.getprof();
+      await this.fetchNotification();
+      this.fetchProjectsByProf();
+      this.socket.emit("acceptstudent", notifStudent.project, notifStudent._id);
+    },
+    async rejectstudent(ind) {
+      const notifProject = this.notifproject[ind];
+      const notifStudent = this.notifstudent[ind];
+
+      const updatedProfessor = {
+        _id: this.professor.id,
+        notifs: this.professor.notifs.filter((_, index) => index !== ind),
+      };
+      notifStudent.notifs.push({
+        projectid: notifProject._id,
+        message: "rejected",
       });
-      this.socket.emit(
-        "rejectstudent",
-        this.notifproject[ind]._id,
-        this.notifstudent[ind]._id
-      );
+
+      notifStudent.rejected.push(notifProject._id);
+
+      const newNotifs = notifStudent.notifs;
+      const newrejected = notifStudent.rejected;
+
+      const updatedStudent = {
+        ...notifStudent,
+        notifs: newNotifs,
+        rejected: newrejected,
+      };
+      await Promise.all([
+        ProfService.updateProf(updatedProfessor),
+        StudentService.updateStudent(updatedStudent),
+      ]);
+
+      console.log("updated student", updatedStudent);
+
+      await this.getprof();
+      await this.fetchNotification();
+      await this.fetchProjectsByProf();
+      this.socket.emit("rejectstudent", notifProject._id, notifStudent._id);
     },
     async addproject() {
-      await projectservice
-        .insertproject({
-          title: this.title,
-          description: this.description,
-          status: this.status,
-          number: this.number,
-          department: this.departmentproject,
-          skills: this.skills,
-          professor: this.profid,
-          deliverables: this.deliverables,
-        })
-        .then(async (res) => {
-          this.title = "";
-          this.description = "";
-          this.status = true;
-          this.number = 1;
-          this.departmentproject = "";
-          this.skills = [];
-          this.deliverables = [];
-          this.evaluationstatus = "notEvaluated";
-          this.prof.projects.push(res.data._id);
-          await profservice.updateprof({
-            id: this.prof._id,
-            projects: this.prof.projects,
-          });
-          this.projects = await allprojectservice.getprojectsbyprof(
-            this.profid
-          );
+      try {
+        const projectData = {
+          title: this.project.title,
+          description: this.project.description,
+          status: this.project.status,
+          number: this.project.number,
+          department: this.project.department,
+          skills: this.project.skills,
+          deliverables: this.project.deliverables.map((deliverable) => {
+            return {
+              title: deliverable,
+              status: false,
+            };
+          }),
+          professor: this.professor.id,
+          evaluationstatus: this.project.evaluationstatus,
+        };
+        const createdProject = await ProjectService.insertProject(projectData);
+        console.log("created project", createdProject);
+        this.project.title = "";
+        this.project.description = "";
+        this.project.number = 0;
+        this.project.status = true;
+        this.project.department = "";
+        this.project.skills = [];
+        this.project.deliverables = [];
+        this.project.evaluationstatus = "notEvaluated";
+        this.professor.projects.push(createdProject.data._id);
+        console.log("professor", this.professor);
+
+        await ProfService.updateProf({
+          _id: this.professor.id,
+          projects: this.professor.projects,
         });
+        await this.fetchProjectsByProf();
+      } catch (err) {
+        this.error = err;
+        console.log(err);
+      }
     },
   },
 };

@@ -1,31 +1,29 @@
 <template>
+  <q-ajax-bar />
   <q-layout>
-    <q-header>
+    <q-header class="bg-black">
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
-          login
+          Login Page
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
-        <div
-          class="q-pa-md flex justify-center align-center items-center"
-          style="width: 100vw; height: 80vh"
-        >
-          <div class="q-pa-md" style="max-width: 400px">
-            <q-form
-              ref="myform"
-              @submit="login"
-              @reset="reset"
-              class="q-gutter-md"
-              autofocus
-              greedy
-            >
+        <div class="login-container">
+          <q-form
+            ref="myform"
+            @submit="login"
+            @reset="reset"
+            class="q-gutter-md"
+            autofocus
+            greedy
+          >
+            <div class="form-content">
               <q-input
                 v-model="email"
-                label="email"
+                label="Email"
                 type="text"
                 required
                 lazy-rules="ondemand"
@@ -36,39 +34,35 @@
               />
               <q-input
                 v-model="password"
-                label="password"
+                label="Password"
                 type="password"
                 lazy-rules="ondemand"
                 :rules="[
                   (val) => val.length > 0 || 'Please type your password',
-                  (val) =>
-                    val.length > 3 || 'Password must be more than 5 characters',
-                  (val) =>
-                    val.length < 15 ||
-                    'Password must be less than 15 characters',
+                  (val) => val.length > 3 || 'Password must be more than 5 characters',
+                  (val) => val.length < 15 || 'Password must be less than 15 characters',
                 ]"
               />
-              <div>
-                <q-btn type="submit" label="submit" />
-                <q-btn
-                  label="Reset"
-                  type="reset"
-                  color="primary"
-                  flat
-                  class="q-ml-sm"
-                />
+              <div class="button-group">
+                <q-btn type="submit" label="Submit" color="primary" />
+                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
               </div>
-            </q-form>
-            <q-btn label="signup" elevated @click="signup" />
+            </div>
+          </q-form>
+            <div class="login-actions">
+          <span>Create an account?</span>
+          <q-btn label="Sign Up" elevated @click="signup" />
           </div>
         </div>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
 import { Notify } from "quasar";
 import axios from "axios";
+
 export default {
   name: "studentloginpage",
   data() {
@@ -84,6 +78,9 @@ export default {
     }
   },
   methods: {
+    routetohome() {
+      this.$router.replace("/");
+    },
     showNotificationUnauth() {
       Notify.create({
         message: "Invalid Credentials",
@@ -100,6 +97,10 @@ export default {
     },
     signup() {
       this.$router.replace("/studentregisterpage");
+    },
+    reset() {
+      this.email = "";
+      this.password = "";
     },
     login() {
       if (this.$refs.myform.validate()) {
@@ -127,4 +128,47 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+form {
+  max-width: 400px;
+  width: 100%;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+</style>

@@ -1,6 +1,7 @@
 <template>
+   <q-ajax-bar />
   <q-layout>
-    <q-header>
+    <q-header class="bg-black">
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
@@ -14,7 +15,7 @@
           class="q-pa-md flex justify-center align-center items-center"
           style="width: 100vw; height: 80vh"
         >
-          <div class="q-pa-lg justify-center" style="width: 70vw">
+          <div class="q-pa-md" style="width: 500px;max-width: 600px ">
             <q-form
               ref="myform"
               @submit="login"
@@ -85,6 +86,9 @@ export default {
     }
   },
   methods: {
+     routetohome() {
+      this.$router.push("/");
+    },
     reset() {
       this.email = "";
       this.password = null;

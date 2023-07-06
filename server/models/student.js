@@ -27,15 +27,23 @@ const studentSchema = mongoose.Schema({
     },
     requestsstatus:
     {
-        type:String,
-        default: "notApplied"
+        type: [
+            {
+                "projectid": mongoose.Schema.Types.ObjectId,
+                "status": Boolean,
+            }
+        ],
+        default: []
     },
     notifs:
     {
-        type: {
+        type: [
+       {
             "projectid":mongoose.Schema.Types.ObjectId,
             "message": String,
-        },
+        }
+    ],
+        default: []
     },
     rejected:
     {

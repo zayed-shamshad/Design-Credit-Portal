@@ -55,7 +55,11 @@ const projectSchema = mongoose.Schema({
     },
     deliverables:
     {
-        type: [String],
+        type: [{
+            "title": String,
+            "completed": Boolean,
+            }
+        ],
         default: []
     },
     

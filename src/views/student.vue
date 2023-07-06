@@ -4,14 +4,25 @@
     <q-header reveal class="bg-black">
       <q-toolbar>
         <q-btn flat @click="drawerLeft = !drawerLeft" round dense icon="menu" />
-        <q-toolbar-title>Header</q-toolbar-title>
+        <q-toolbar-title>
+          {{ $route.name }}
+        </q-toolbar-title>
+        <q-item clickable v-ripple @click="shownotifs">
+          <q-item-section avatar>
+            <q-icon name="message">
+              <q-badge floating color="red" rounded> </q-badge>
+            </q-icon>
+          </q-item-section>
+        </q-item>
+        <q-btn
+          label="Logout"
+          icon="logout"
+          dense
+          color="negative"
+          @click="logout"
+        />
       </q-toolbar>
     </q-header>
-    <q-footer>
-      <q-toolbar>
-        <q-toolbar-title>Footer</q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
 
     <q-drawer
       v-model="drawerLeft"
@@ -28,21 +39,11 @@
         "
       >
         <q-list padding>
-          <q-item clickable v-ripple @click="showNotifs = true">
+          <q-item clickable v-ripple @click="routetohome">
             <q-item-section avatar>
-              <q-icon name="message">
-                <q-badge floating color="red" rounded />
-              </q-icon>
+              <q-icon name="home"> </q-icon>
             </q-item-section>
-            <q-item-section> Inbox </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="star" />
-            </q-item-section>
-
-            <q-item-section> Star </q-item-section>
+            <q-item-section> Home </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple @click="logout">
@@ -71,175 +72,169 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
-          <div class="text-weight-bold">user</div>
-          <div>@user</div>
         </div>
       </q-img>
     </q-drawer>
+
     <q-dialog v-model="showNotifs">
       <q-card>
         <q-card-section>
           <div class="text-h6">Alert</div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none" v-if="notifdetails">
+          <div>
+            <q-list bordered separator>
+              <q-item v-for="notif in notifdetails" :key="notif">
+                <q-item-section>{{ notif.project }}</q-item-section>
+                <q-item-section>{{ notif.status }}</q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pt-none" v-else>
           there are no notifications
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions right>
           <q-btn flat label="OK" color="primary" v-close-popup />
+          <q-btn @click="remove" flat label="delete" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
     <q-page-container>
       <q-page>
-        <router-view v-slot="{ Component, route }">
-          <component
-            :is="Component"
-            v-if="route.name == 'myproject'"
-            v-bind:myproject="myproject"
-          >
-          </component>
-          <component :is="Component" v-else> </component>
-        </router-view>
+        <router-view> </router-view>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
-<script>
+<script setup>
+import {Notify} from "quasar";
 import io from "socket.io-client";
-import axios from "axios";
-import projectservice from "../services/getprojectservice";
-import studentservice from "../services/getstudent";
-import profservice from "../services/getprofs";
-export default {
-  name: "student",
-  data() {
-    return {
-      drawerLeft: false,
-      socket: null,
-      showNotifs: false,
-      notifs: null,
-      error: null,
-      name: "",
-      department: "",
-      email: "",
-      requestsstatus: "",
-      project: null,
-      myproject: {
-        title: "",
-        description: "",
-        department: "",
-        deliverables: [],
-        professor: "",
-      },
-      skills: [],
-      rejected: [],
-      student: null,
-      notifproj: "",
-    };
-  },
-  mounted() {
-    this.socket.on("studentid", (data) => {
-      console.group("student here");
-      console.log(data);
-    });
-    this.socket.on("studentaccepted", (projectid, studentid) => {
-      if (studentid == this.student) {
-      }
-    });
-    this.socket.on(
-      "studentrejected",
-      (requestsstatus, notifs, studentId, title, desc, dept) => {
-        if (studentId == this.student) {
-          this.notifs = notifs;
-          this.requestsstatus = requestsstatus;
-          this.myproject.title = title;
-          this.myproject.description = desc;
-          this.myproject.department = dept;
-        }
-      }
-    );
-  },
-  async created() {
-    this.socket = io("http://localhost:5000");
-    try {
-      this.projects = await allprojectservice.getprojects();
-    } catch (err) {
-      this.error = err;
-    }
-    try {
-      await axios
-        .get("http://localhost:5000/studentregister/user", {
-          headers: {
-            studenttoken: localStorage.getItem("studenttoken"),
-          },
-        })
-        .then(async (response) => {
-          this.student = response.data.student._id;
-          this.name = response.data.student.name;
-          this.department = response.data.student.department;
-          this.email = response.data.student.email;
-          this.requestsstatus = response.data.student.requestsstatus;
-          this.notifs = response.data.student.notifs;
-          this.rejected = response.data.student.rejected;
-          this.project = response.data.student.project;
-          this.skills = response.data.student.skills;
-          // console.log("this is the project of the student ",response.data.student.project);
-          try {
-            await projectservice
-              .getaproject(response.data.student.project)
-              .then(async (res) => {
-                console.log(res);
-                this.myproject.title = res.title;
-                this.myproject.description = res.description;
-                this.myproject.department = res.department;
-                this.myproject.deliverables = res.deliverables;
-                if (this.notifs != null) {
-                  await projectservice
-                    .getaproject(this.notifs.projectid)
-                    .then((ressss) => {
-                      this.notifproj = ressss.title;
-                    });
-                  await profservice.getprofbyid(res.professor).then((res) => {
-                    this.myproject.professor = res.name;
-                  });
-                }
-              });
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  },
-  methods: {
-    async remove() {
-      this.notifs = {
-        projectid: null,
-        message: null,
-      };
-      await studentservice.updatestudent({
-        id: this.student,
-        notifs: this.notifs,
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import ProjectService from "../services/getprojectservice";
+import StudentService from "../services/getstudent";
+import { studentStore } from "../stores/student";
+
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const drawerLeft = ref(false);
+const showNotifs = ref(false);
+const socket = ref(null);
+const notifs = ref(null);
+const notifdetails = ref([]);
+const studentstore=studentStore();
+const student=ref(null);
+student.value=studentstore.getStudent;
+
+onMounted(() => {
+  initializeSocket();
+  if(student.value.notifs) fetchStudentNotifications();
+});
+
+onBeforeUnmount(() => {
+  socket.value.disconnect();
+});
+
+async function initializeSocket() {
+  socket.value = io("http://localhost:5000");
+  socket.value.emit("studentRegister",(student.value.id));
+
+  socket.value.on("studentaccepted", async (projectid, studentid) => {
+    Notify.create({
+        message: "You have been accepted to a project",
+        position: "top",
+        timeout: 12000,
+        actions: [{ icon: "close", color: "white" }],
       });
-    },
-    shownotifs() {
-      this.showNotifs = !this.showNotifs;
-    },
-    logout() {
-      localStorage.removeItem("studenttoken");
-      this.$router.replace("/studentloginpage");
-    },
-    routetodept() {
-      this.$router.push({ name: "alldepartment" });
-    },
-  },
-};
+    await fetchStudentNotifications();
+  });
+  socket.value.on("studentrejected", async (projectid, studentId) => {
+    console.log("student rejected")
+    Notify.create({
+        message: "You have been rejected",
+        position: "top",
+        timeout: 12000,
+        actions: [{ icon: "close", color: "white" }],
+      });
+    await fetchStudentNotifications();
+  });
+}
+
+async function fetchProjectNotification(notifications) {
+  notifdetails.value = [];
+  try {
+    notifications.map(async (notification) => {
+      
+      const res = await ProjectService.getAProject(notification.projectid);
+      notifdetails.value.push({
+        project : res.title,
+        status  : notification.message
+      });
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function fetchStudentNotifications() {
+  try {
+
+    const response = await StudentService.getStudentById(student.value.id);
+    notifs.value = response.notifs;
+
+    studentstore.setStudent({
+      ...student.value,
+      notifs: response.notifs,
+    });
+    student.value = studentstore.getStudent;
+
+    await fetchProjectNotification(notifs.value);
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function remove() {
+  if(notifs.value!=null){
+     try {
+    await StudentService.updateStudent({
+      _id: student.value.id,
+      notifs: [],
+    });
+    studentstore.setStudent({
+      ...student.value,
+      notifs: [],
+    });
+    notifs.value = null;
+    notifdetails.value = [];
+
+  } catch (err) {
+    console.error(err);
+  }
+  }
+}
+
+function shownotifs() {
+  showNotifs.value = !showNotifs.value;
+}
+
+function logout() {
+  localStorage.removeItem("studenttoken");
+  router.replace("/studentloginpage");
+}
+
+function routetodept() {
+  router.push({ name: "alldepartment" });
+}
+
+function routetohome() {
+  router.push({ name: "home" });
+}
 </script>

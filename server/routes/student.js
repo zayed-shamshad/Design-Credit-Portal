@@ -14,10 +14,12 @@ router.get('/:studentid', (req, res) => {
         )
 });
 router.patch('/:studentid', (req, res) => {
-    student.updateOne({ _id: req.params.studentid }, { $set: { name: req.body.name, email: req.body.email, department: req.body.department, project: req.body.project, requestsstatus: req.body.requestsstatus,notifs: req.body.notifs,skills:req.body.skills,rejected:req.body.rejected } })
+    student.updateOne({ _id: req.params.studentid }, { $set: { name: req.body.name, email: req.body.email, department: req.body.department, project: req.body.project, requestsstatus: req.body.requestsstatus, notifs: req.body.notifs, skills: req.body.skills, rejected: req.body.rejected } })
         .then(data => {
+            console.log("patch,",data)
             res.json(data);
         }).catch(err => {
+            console.log("patch,",err)
             res.json({ message: err });
         });
     console.log(req.body);
