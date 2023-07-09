@@ -159,7 +159,7 @@ async function initializeSocket() {
     Notify.create({
         message: "You have been rejected",
         position: "top",
-        timeout: 12000,
+        timeout: 2000,
         actions: [{ icon: "close", color: "white" }],
       });
     await fetchStudentNotifications();

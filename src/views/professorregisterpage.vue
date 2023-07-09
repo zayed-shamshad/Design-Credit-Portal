@@ -5,19 +5,15 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
-          signup
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
-        <div
-          class="q-pa-md flex justify-center align-center items-center"
-          style="width: 100vw; height: 80vh"
-        >
-
-  <div class="q-pa-md" style="width: 500px;max-width: 700px">
+        <div class="login-container">
+          <h4>Professor Registration</h4>
     <q-form @submit="signup" @reset="reset" class="q-gutter-md" greedy>
+      <div class="form-content">
       <q-input
         type="email"
         label="email"
@@ -66,7 +62,7 @@
         label="Department"
       />
 
-      <div>
+      <div class="button-group">
         <q-btn type="submit" label="signup" />
         <q-btn
           type="reset"
@@ -76,10 +72,13 @@
           label="reset"
         />
       </div>
+      </div>
     </q-form>
+    <div class="login-actions">
+            <span>Already have an account?</span>
     <q-btn @click="login" label="signin" />
-  </div>
-</div>
+      </div>
+    </div>
    </q-page>
     </q-page-container>
   </q-layout>
@@ -123,4 +122,108 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  min-width: 300px;
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-actions span {
+  margin-right: 10px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  max-width: 500px; /* Increased width */
+  width: 100%;
+  margin: 0 auto; /* Center the form horizontally */
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-actions span {
+  margin-right: 10px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+
+
+</style>

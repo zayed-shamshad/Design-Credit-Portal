@@ -5,13 +5,13 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
-          Student Register Page
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
         <div class="login-container">
+          <h4>Student Registration</h4>
           <q-form
             @submit="signup"
             @reset="reset"
@@ -33,6 +33,17 @@
                   (val) => /.+@.+/.test(val) || 'E-mail must be valid',
                 ]"
               />
+               <q-input
+                type="text"
+                label="Username"
+                v-model="name"
+                required
+                autofocus
+                lazy-rules="ondemand"
+                :rules="[
+                  (val) => val.length > 0 || 'Please type your username',
+                ]"
+              />
 
               <q-input
                 type="password"
@@ -46,17 +57,7 @@
                   (val) => val.length < 15 || 'Password must be less than 15 characters',
                 ]"
               />
-              <q-input
-                type="text"
-                label="Username"
-                v-model="name"
-                required
-                autofocus
-                lazy-rules="ondemand"
-                :rules="[
-                  (val) => val.length > 0 || 'Please type your username',
-                ]"
-              />
+             
 
               <q-select
                 v-model="department"
@@ -199,7 +200,7 @@ export default {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
-  max-width: 400px;
+  min-width: 300px;
   width: 100%;
 }
 

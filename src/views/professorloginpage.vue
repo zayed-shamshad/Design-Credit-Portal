@@ -5,17 +5,13 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
-          login
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
-        <div
-          class="q-pa-md flex justify-center align-center items-center"
-          style="width: 100vw; height: 80vh"
-        >
-          <div class="q-pa-md" style="width: 500px;max-width: 600px ">
+        <div class="login-container">
+        <h4>Professor login</h4>
             <q-form
               ref="myform"
               @submit="login"
@@ -23,8 +19,9 @@
               class="q-gutter-md"
               autofocus
               greedy
-              style="max-width: 800px"
+            
             >
+            <div class="form-content">
               <q-input
                 v-model="email"
                 label="email"
@@ -60,10 +57,17 @@
                   class="q-ml-sm"
                 />
               </div>
+              </div>
             </q-form>
-            <q-btn label="signup" elevated @click="signup" />
-          </div>
-        </div>
+             <div class="q-pa-md q-gutter-sm q-gutter-md row justify-center items-center">
+  <div class="col-auto">
+    <span>Don't have an account?</span>
+  </div>
+  <div class="col-auto">
+    <q-btn label="Sign Up" elevated @click="signup" />
+  </div>
+</div>
+            </div>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -138,4 +142,49 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 0 20px;
+}
+
+form {
+  max-width: 400px;
+  width: 100%;
+}
+
+.form-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.q-input__control {
+  border-color: #000000;
+}
+
+.q-input__label {
+  color: #000000;
+}
+
+.q-input__bottom-row .q-field__messages {
+  color: #f44336;
+}
+
+.q-btn {
+  margin-top: 10px;
+}
+</style>
+
+

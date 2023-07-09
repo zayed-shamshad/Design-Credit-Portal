@@ -8,6 +8,8 @@
           <p><strong>Email:</strong> {{ studentDetails.email }}</p>
           <p><strong>Department:</strong> {{ studentDetails.department }}</p>
           <p><strong>Skills:</strong> {{ studentDetails.skills.join(", ") }}</p>
+          <p><strong>Project:</strong> {{ studentDetails.project }}</p>
+         
         </div>
       </q-card-section>
     </q-card>
@@ -29,6 +31,7 @@
           <ul>
             <li v-for="deliverable in studentDetails.myproject.deliverables" :key="deliverable">
               {{ deliverable.title }}
+              :: {{ deliverable.completed ? "Completed" : "Not Completed" }}
             </li>
           </ul>
           <p><strong>Professor:</strong> {{ studentDetails.myproject.professor }}</p>

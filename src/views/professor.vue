@@ -5,60 +5,190 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="opendrawer = !opendrawer" />
         <q-btn @click="showcreateproject = true" flat v-ripple>
-          <q-icon name="add" />
+          Create
         </q-btn>
-
-        <q-toolbar-title> portal </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
     <q-page-container>
       <q-page padding>
-        <div v-if="showopen" class="department-container row">
-          <div class="row justify-center q-gutter-sm">
-            <div
-              v-for="(project, index) in getopenprojects"
-              :item="project"
-              :index="index"
-              :key="project._id"
-              class="q-pa-md flex flex-center relative-position example-item"
-            >
-              <transition name="q-transition--scale">
-                <q-card>
-                  <q-card-section>
-                    <h3>{{ project.title }}</h3>
-                    <p class="text">{{ project.description }}</p>
-                    <p class="text">{{ project.number }}</p>
-                    <q-btn v-on:click="deleteproject(index)">Delete</q-btn>
-                    <q-btn v-on:click="showeditform(index)">Edit</q-btn>
-                  </q-card-section>
-                </q-card>
-              </transition>
+        <div v-if="projects.length != 0">
+          <div v-if="getopenprojects.length!=0">
+             <h3>
+            Open Projects
+          </h3>
+          <div class="department-container row">
+         
+            <div class="row justify-center q-gutter-sm">
+              <div
+                v-for="(project, index) in getopenprojects"
+                :item="project"
+                :index="index"
+                :key="project._id"
+                class="q-pa-md flex flex-center relative-position example-item"
+              >
+                <transition name="q-transition--scale">
+                  <q-card class="my-card" flat bordered>
+                    <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+
+                    <q-card-section>
+                      <div class="text-overline text-orange-9">
+                        positions open :{{ project.number }}
+                      </div>
+                      <div class="text-h5 q-mt-sm q-mb-xs">
+                        {{ project.title }}
+                      </div>
+                      <div class="col">
+                        <div
+                          class="text-caption text-grey"
+                          v-for="deliverable in project.deliverables"
+                          :key="deliverable"
+                        >
+                          <div class="flex items-center justify-between">
+                            <div>
+                              {{ deliverable.title }}
+                            </div>
+                            <div>
+                              <q-icon
+                                v-if="!deliverable.completed"
+                                name="close"
+                              />
+                              <q-icon
+                                v-if="deliverable.completed"
+                                name="check"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </q-card-section>
+
+                    <q-card-actions>
+                      <q-btn v-on:click="deleteproject(project._id)"
+                        >Delete</q-btn
+                      >
+                      <q-btn v-on:click="showeditform(project._id)">Edit</q-btn>
+
+                      <q-space />
+
+                      <q-btn
+                        color="grey"
+                        round
+                        flat
+                        dense
+                        :icon="
+                          expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                        "
+                        @click="expanded = !expanded"
+                      />
+                    </q-card-actions>
+
+                    <q-slide-transition>
+                      <div v-show="expanded">
+                        <q-separator />
+                        <q-card-section class="text-subitle2">
+                           Description:
+                          {{ project.description }}
+                        </q-card-section>
+                      </div>
+                    </q-slide-transition>
+                  </q-card>
+                </transition>
+              </div>
             </div>
           </div>
+           </div>
+           <div v-if="getclosedprojects.length!=0" >
+              <h3>Ongoing Projects!</h3>
+          
+          <div class="department-container row">
+          
+            <div class="row justify-center q-gutter-sm">
+              <div
+                v-for="(project, index) in getclosedprojects"
+                :item="project"
+                :index="index"
+                :key="project._id"
+                class="q-pa-md flex flex-center relative-position example-item"
+              >
+                <transition name="q-transition--scale">
+                   <q-card class="my-card" flat bordered>
+                    <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+
+                    <q-card-section>
+                      <div class="text-overline text-orange-9">
+                        positions open :{{ project.number }}
+                      </div>
+                      <div class="text-h5 q-mt-sm q-mb-xs">
+                        {{ project.title }}
+                      </div>
+                      <div class="col">
+                        <div
+                          class="text-caption text-grey"
+                          v-for="deliverable in project.deliverables"
+                          :key="deliverable"
+                        >
+                          <div class="flex items-center justify-between">
+                            <div>
+                              {{ deliverable.title }}
+                            </div>
+                            <div>
+                              <q-icon
+                                v-if="!deliverable.completed"
+                                name="close"
+                              />
+                              <q-icon
+                                v-if="deliverable.completed"
+                                name="check"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </q-card-section>
+
+                    <q-card-actions>
+                      <q-btn v-on:click="deleteproject(project._id)"
+                        >Delete</q-btn
+                      >
+                      <q-btn v-on:click="showeditform(project._id)">Edit</q-btn>
+                         <q-btn @click="checkoutproject(project._id)"
+                        >
+                        Evaluate
+                      </q-btn>
+
+                      <q-space />
+
+                      <q-btn
+                        color="grey"
+                        round
+                        flat
+                        dense
+                        :icon="
+                          expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                        "
+                        @click="expanded = !expanded"
+                      />
+                    </q-card-actions>
+
+                    <q-slide-transition>
+                      <div v-show="expanded">
+                        <q-separator />
+                        <q-card-section class="text-subitle2">
+                          Description:
+                          {{ project.description }}
+                        </q-card-section>
+                      </div>
+                    </q-slide-transition>
+                  </q-card>
+                </transition>
+              </div>
+            </div>
+          </div>
+           </div>
         </div>
-        <div v-if="showclosed" class="department-container row">
-          <div class="row justify-center q-gutter-sm">
-            <div
-              v-for="(project, index) in getclosedprojects"
-              :item="project"
-              :index="index"
-              :key="project._id"
-              class="q-pa-md flex flex-center relative-position example-item"
-            >
-              <transition name="q-transition--scale">
-                <q-card>
-                  <q-card-section>
-                    <h3>{{ project.title }}</h3>
-                    <p class="text">{{ project.description }}</p>
-                    <p class="text">{{ project.number }}</p>
-                    <q-btn v-on:click="showeditform(index)">Edit </q-btn>
-                    <q-btn @click="checkoutproject(index)">checkout </q-btn>
-                  </q-card-section>
-                </q-card>
-              </transition>
-            </div>
-          </div>
+        <div v-else>
+          <div class="text-h6">No projects</div>
         </div>
       </q-page>
     </q-page-container>
@@ -92,28 +222,16 @@
             </q-item-section>
             <q-item-section> notifications </q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="showopenp">
-            <q-item-section avatar>
-              <q-icon name="laptop" />
-            </q-item-section>
-            <q-item-section> open projects </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="showclosedp">
-            <q-item-section avatar>
-              <q-icon name="close" />
-            </q-item-section>
-            <q-item-section> close projects </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
     <q-footer> </q-footer>
 
-    <q-dialog v-model="showcreateproject">
-      <q-card>
+    <q-dialog v-model="showcreateproject" class="dialog-container">
+      <q-card class="card-container">
         <q-card-section class="row items-center">
-          <q-form @submit="addproject" @reset="reset">
+          <q-form @submit="addproject" @reset="reset" class="form-content">
             <q-input
               type="text"
               v-model="project.title"
@@ -154,7 +272,6 @@
               hide-dropdown-icon
               input-debounce="0"
               new-value-mode="add-unique"
-              style="width: 250px"
             />
             <q-select
               label="skills required"
@@ -192,6 +309,7 @@
           <q-form @submit="updateproject" @reset="resetedit">
             <q-input type="text" v-model="editProject.title" required />
             <q-input type="text" v-model="editProject.description" required />
+
             <q-input type="number" v-model="editProject.number" required />
             <q-select
               label="deliverables"
@@ -207,9 +325,10 @@
             />
             <q-select
               :options="statusproject"
-              v-model="editProject.status"
+              v-model="editProject.evaluationstatus"
               label="project evaluation"
             />
+            <q-checkbox v-model="editProject.status" label="open/close" />
             <q-select
               v-model="editProject.department"
               bottom
@@ -306,11 +425,14 @@ import AllProjectService from "../services/getallprojects";
 import ProjectService from "../services/getprojectservice";
 import ProfService from "../services/getprofs";
 import StudentService from "../services/getstudent";
+import { Notify } from "quasar";
 export default {
   name: "professor",
   data() {
     return {
       statusproject: ["notEvaluated", "Evaluated", "pending"],
+      openCloseStatuslabel: ["open", "close"],
+      openCloseStatusvalue: [true, false],
       departments: ["CSE", "EE", "ME", "CH", "BB", "AI", "CI", "MT"],
       options: [
         "web development",
@@ -384,11 +506,10 @@ export default {
         "Scrum",
         "Kanban",
       ],
+      expanded: false,
 
       opendrawer: false,
       showNotifs: false,
-      showopen: true,
-      showclosed: true,
       showcreateproject: false,
       socket: null,
       showedit: false,
@@ -455,6 +576,12 @@ export default {
   async mounted() {
     console.log(this.notifstudent.length);
     this.socket.on("newNotification", async (data) => {
+      Notify.create({
+        message: "You have been accepted to a project",
+        position: "top",
+        timeout: 2000,
+        actions: [{ icon: "close", color: "white" }],
+      });
       await this.getprof();
       await this.fetchNotification();
       console.log("i m in sockettt", data);
@@ -509,15 +636,8 @@ export default {
       this.project.deliverables = [];
       this.project.evaluationstatus = "notEvaluated";
     },
-    checkoutproject(index) {
-      this.$router.push("/project/" + this.getclosedprojects[index]._id);
-    },
-
-    showopenp() {
-      this.showopen = !this.showopen;
-    },
-    showclosedp() {
-      this.showclosed = !this.showclosed;
+    checkoutproject(projectid) {
+      this.$router.push("project/" + projectid);
     },
     showcreateprojectbox() {
       this.showcreateproject = true;
@@ -527,7 +647,10 @@ export default {
       this.$router.replace("/professorloginpage");
     },
 
-    showeditform(ind) {
+    showeditform(projectid) {
+      const ind = this.projects.findIndex(
+        (project) => project._id === projectid
+      );
       this.showedit = true;
       this.editProject.index = ind;
 
@@ -544,9 +667,11 @@ export default {
       );
       this.editProject.evaluationstatus = this.projects[ind].evaluationstatus;
     },
-    async deleteproject(index) {
+    async deleteproject(deletedProjectId) {
       try {
-        const deletedProjectId = this.projects[index]._id;
+        const index = this.projects.findIndex(
+          (project) => project._id === deletedProjectId
+        );
         await ProjectService.deleteProject(deletedProjectId);
         this.projects.splice(index, 1);
 
@@ -580,7 +705,7 @@ export default {
           deliverables: this.editProject.deliverables.map((deliverable) => {
             return {
               title: deliverable,
-              status: false,
+              completed: false,
             };
           }),
           evaluationstatus: this.editProject.evaluationstatus,
@@ -616,14 +741,16 @@ export default {
       };
 
       const updatedProfessor = {
-        ...this.professor,
+        _id: this.professor.id,
         notifs: this.professor.notifs.filter((_, index) => index !== ind),
       };
 
-      const newNotifs = notifStudent.notifs.push({
+      notifStudent.notifs.push({
         projectid: notifProject._id,
         message: "accepted",
       });
+
+      const newNotifs = notifStudent.notifs;
 
       const updatedStudent = {
         ...notifStudent,
@@ -635,18 +762,14 @@ export default {
 
       await Promise.all([
         ProfService.updateProf(updatedProfessor),
-        ProjectService.updateProject({
-          ...notifProject,
-          number: updatedProject.number,
-          status: updatedProject.number === 0 ? false : notifProject.status,
-          students: updatedProject.students,
-        }),
+        ProjectService.updateProject(updatedProject),
         StudentService.updateStudent(updatedStudent),
       ]);
+
       await this.getprof();
       await this.fetchNotification();
-      this.fetchProjectsByProf();
-      this.socket.emit("acceptstudent", notifStudent.project, notifStudent._id);
+      await this.fetchProjectsByProf();
+      this.socket.emit("acceptstudent", notifProject._id, notifStudent._id);
     },
     async rejectstudent(ind) {
       const notifProject = this.notifproject[ind];
@@ -695,12 +818,13 @@ export default {
           deliverables: this.project.deliverables.map((deliverable) => {
             return {
               title: deliverable,
-              status: false,
+              completed: false,
             };
           }),
           professor: this.professor.id,
           evaluationstatus: this.project.evaluationstatus,
         };
+        console.log("projectData", projectData);
         const createdProject = await ProjectService.insertProject(projectData);
         console.log("created project", createdProject);
         this.project.title = "";
@@ -727,3 +851,53 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.heading-container {
+  background-color: #000000;
+  width: 100%;
+}
+
+.heading {
+  color: #ffffff;
+  padding: 10px;
+}
+.dialog-container {
+  width: 80vw; /* Use viewport width for width measurement */
+  max-width: none !important; /* Override default max-width */
+}
+
+.card-container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.q-card-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-content {
+  width: 100%; /* Take up the full width */
+}
+
+.q-pa-md {
+  padding: 20px;
+}
+
+.q-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.my-card {
+  width: 100%;
+  max-width: 350px;
+  min-width: 300px;
+}
+</style>

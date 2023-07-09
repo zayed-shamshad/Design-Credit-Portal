@@ -39,7 +39,7 @@
     <q-header class="navbar">
       <div class="q-pa-md">
         <div class="row justify-center">
-          <h1 class="navbar-title">Design Credit Portal</h1>
+          <h2 class="navbar-title">Design Credit Portal</h2>
         </div>
       </div>
     </q-header>

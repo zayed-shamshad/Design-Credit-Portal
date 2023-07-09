@@ -5,13 +5,15 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat label="Home" @click="routetohome()" />
-          Login Page
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>
       <q-page>
+       
         <div class="login-container">
+          <h4>Student Login</h4>
+         
           <q-form
             ref="myform"
             @submit="login"
@@ -19,6 +21,7 @@
             class="q-gutter-md"
             autofocus
             greedy
+            
           >
             <div class="form-content">
               <q-input
@@ -49,10 +52,15 @@
               </div>
             </div>
           </q-form>
-            <div class="login-actions">
-          <span>Create an account?</span>
-          <q-btn label="Sign Up" elevated @click="signup" />
-          </div>
+          <div class="q-pa-md q-gutter-sm q-gutter-md row justify-center items-center">
+  <div class="col-auto">
+    <span>Don't have an account?</span>
+  </div>
+  <div class="col-auto">
+    <q-btn label="Sign Up" elevated @click="signup" />
+  </div>
+</div>
+
         </div>
       </q-page>
     </q-page-container>
