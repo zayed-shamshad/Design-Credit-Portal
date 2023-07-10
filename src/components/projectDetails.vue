@@ -73,7 +73,6 @@
             </div>
           </li>
         </ul>
-
         <q-select
         v-model="evaluationstatus"
         :options="options"
@@ -82,7 +81,6 @@
         transition-show="flip-up"
         hide-dropdown-icon
         transition-hide="flip-down"
-
         options-cover
         menu-offset="[100,100]"
       >
@@ -136,7 +134,7 @@ const id=route.params.id;
 const project=ref(null);
 const newdeliverables=ref([]);
 const students=ref([]);
-const evaluationstatus=ref("not evaluated");
+const evaluationstatus=ref("");
 const options=[
   "not evaluated",
   "evaluated",
@@ -145,6 +143,7 @@ projectData();
 
 async function projectData(){
     project.value=await ProjectService.getAProject(id);
+    evaluationstatus.value=project.value.evaluationstatus;
     newdeliverables.value=project.value.deliverables.map((deliverable)=>{
         return deliverable.completed;
     })
@@ -158,7 +157,7 @@ async function projectData(){
 async function updateDeliverables(){
     const updateproject={
         ...project.value,
-        evaluationstatus:evaluationstatus.value,
+        evaluationstatus: evaluationstatus.value,
         deliverables:project.value.deliverables.map((deliverable,index)=>{
             return {
                 ...deliverable,

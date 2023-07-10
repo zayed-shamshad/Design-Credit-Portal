@@ -91,15 +91,23 @@ const router = createRouter({
       path: '/professorPage',
       name: 'professor',
       component: () => import('../views/professor.vue'),
-    }
-    ,
-    {
+      redirect: { name: 'professorhome' },
+      children: [
+        {
+          path: '',
+          name: 'professorhome',
+          component: () => import('../components/professorhome.vue'),
+          props: true
+        },
+        {
           path: '/project/:id',
           name: 'projectDetails',
           component: () => import('../components/projectDetails.vue'),
           props: true,
-    },
-
+        },
+      ]
+    }
+    ,
     {
       path: '/studentloginpage',
       name: 'studentloginpage',
