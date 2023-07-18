@@ -60,7 +60,7 @@
                v-if="
              !(requestsstatus.find((request) => request.projectid === project._id) ||
                     rejected.indexOf(project._id) !=-1
-                    || !myproject)"
+                    || myproject)"
               >
                   <q-btn  
                   color="primary" class="apply-btn" @click="apply(project._id)">Apply</q-btn>

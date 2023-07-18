@@ -196,7 +196,7 @@
         <q-card-section class="row items-center">
           <q-form @submit="updateproject" @reset="resetedit">
             <q-input type="text" v-model="editProject.title" required />
-            <q-input type="text" v-model="editProject.description" required />
+            <q-input type="textarea" label="description" v-model="editProject.description" required />
 
             <q-input type="number" v-model="editProject.number" required />
             <q-select
@@ -209,7 +209,11 @@
               hide-dropdown-icon
               input-debounce="0"
               new-value-mode="add-unique"
-              style="width: 250px"
+
+             :style="{
+                'max-width': '500px',
+              }"
+             
             />
             <q-select
               :options="statusproject"

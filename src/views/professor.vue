@@ -59,9 +59,10 @@
               required
             />
             <q-input
-              type="text"
+              type="textarea"
               v-model="project.description"
               placeholder="add description"
+              label="Description"
               required
             />
             <q-input
