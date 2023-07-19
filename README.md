@@ -38,14 +38,11 @@ The Design Credit Registration Portal is a web-based platform that facilitates t
 ## Setup and Configuration
 
 1. Clone the repository or download the project files.
-2. Install the necessary dependencies for the frontend and backend using npm or yarn.
-3. Configure the database connection settings in the backend configuration files.
-4. Implement the necessary API endpoints and routes for user registration, login, project creation, application submission, evaluation, and notification handling.
-5. Implement the authentication and authorization logic using JWT tokens in the backend.
-6. Create the frontend components and pages for the student and professor portals, project listings, application forms, evaluation forms, and notification displays using Vue 3 and Quasar.
-7. Implement the real-time communication mechanism using WebSockets for notifications.
-8. Test the portal thoroughly, ensuring all functionalities are working as expected.
-9. Deploy the application to a hosting platform of your choice, ensuring the proper configuration for the frontend and backend.
+2. To get started, install all the dependencies using npm install
+3. Start the local development server using npm run dev command
+4. To run the server, cd into the server
+5. Start the server using npm start command
+
 
 ## Usage
 
