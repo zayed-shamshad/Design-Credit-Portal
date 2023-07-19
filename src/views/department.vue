@@ -81,8 +81,6 @@ import StudentService from "../services/getstudent";
 import { useRoute } from 'vue-router';
 import { studentStore } from "../stores/student";
 
-
-
 const route = useRoute();
 const socket = ref(null);
 const studentstore = studentStore();
